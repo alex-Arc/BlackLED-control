@@ -1,0 +1,11 @@
+{
+  "name": "blackled-control",
+  "version": "0.0.1",
+  "description": "control interface for Vertgo's BlackLED driver",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex Christoffer Rasmussen",
+  "license": "MIT"
+}
