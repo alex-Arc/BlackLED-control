@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>BlackLED Control</title>
+      <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css" />
+      <style type="text/css">
+         #node-list{
+            height: 150px;
+            /*overflow-y: auto;*/
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <!-- <h1>Nodes</h1> -->
+         <div id="node-list">
+            <table class="table table-striped" id="node-table">
+                <tr>
+                  <th>Status</th>
+                  <th>Name</th>
+                  <th>MAC</th>
+                  <th>
+                  </th>
+                </tr>
+              <tbody id="node-table-content">
+              </tbody>
+            </table>
+         </div>
+         <script src="./server.js" ></script>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class="container">
+        <button class="btn btn-primary" id="update-list">Update</button>
+      </div>
+   </body>
+</html>
