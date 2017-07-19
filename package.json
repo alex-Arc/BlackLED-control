@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "jquery": "^3.2.1",
+    "electron-settings": "^3.1.1",
     "artnet": "git+https://github.com/vertigo-dk/node-artnet.git"
   },
   "author": "Alex Christoffer Rasmussen",

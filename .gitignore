@@ -28,3 +28,7 @@ hs_err_pid*
 /node_modules/packet
 /node_modules/q
 /node_modules/underscore
+/node_modules/electron-settings
+/node_modules/jsonfile
+/node_modules/clone
+/node_modules/graceful-fs

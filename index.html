@@ -14,15 +14,31 @@
    <body>
       <div class="container">
          <!-- <h1>Nodes</h1> -->
+         <div class="btn-toolbar" role="toolbar" aria-label="...">
+           <div class="btn-group" role="group" aria-label="Mode">
+             <button type="button" class="btn btn-primary" id="mode-live">Live</button>
+             <button type="button" class="btn btn-default" id="mode-setup">Setup</button>
+           </div>
+           <div class="btn-group" role="group" aria-label="Clear">
+             <button type="button" class="btn btn-default" disabled="disabled" id="clear-all">Clear All</button>
+             <button type="button" class="btn btn-default" disabled="disabled" id="clear-offline">Clear Offline</button>
+           </div>
+           <div class="btn-group" role="group" aria-label="Update">
+             <button class="btn btn-primary" id="update-table">Update</button>
+           </div>
+         </div>
          <div id="node-list">
-            <table class="table table-striped" id="node-table">
+            <table class="table table-hover" id="node-table">
+              <thead>
                 <tr>
-                  <th>Status</th>
+                  <th class="col-md-1">Status</th>
                   <th>Name</th>
-                  <th>MAC</th>
-                  <th>
-                  </th>
+                  <th class="col-md-4">MAC</th>
+                  <th class="col-md-4">Addr.</th>
+                  <th class="col-md-2">FW</th>
+                  <th class="col-md-1"></th>
                 </tr>
+              </thead>
               <tbody id="node-table-content">
               </tbody>
             </table>
@@ -32,8 +48,5 @@
       <p></p>
       <p></p>
       <p></p>
-      <div class="container">
-        <button class="btn btn-primary" id="update-list">Update</button>
-      </div>
    </body>
 </html>
