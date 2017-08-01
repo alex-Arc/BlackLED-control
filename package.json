@@ -4,6 +4,7 @@
   "description": "control interface for Vertgo's BlackLED driver",
   "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
