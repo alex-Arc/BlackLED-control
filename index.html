@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8">
       <title>BlackLED Control</title>
-      <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
       <style type="text/css">
          #node-list{
             height: 150px;
@@ -26,11 +26,15 @@
            <div class="btn-group" role="group" aria-label="Update">
              <button class="btn btn-primary" id="update-table">Update</button>
            </div>
+           <div class="btn-group" role="group" aria-label="show">
+             <button class="btn btn-primary" id="show-subTable">Show sub nodes</button>
+           </div>
          </div>
          <div id="node-list">
             <table class="table table-hover" id="node-table">
               <thead>
                 <tr>
+                  <th class="col-md-1"></th>
                   <th class="col-md-1">Status</th>
                   <th>Name</th>
                   <th class="col-md-4">MAC</th>
