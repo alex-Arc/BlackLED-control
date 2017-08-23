@@ -120,15 +120,19 @@ function updateTable () {
       node.push(obj)
     }
   }
-  console.log(node)
-  if (controller.nodes.length > 0) {
-    console.log('nodes found')
-  } else {
+  if (controller.nodes.length <= 0) {
     console.log('No ArtNet nodes found')
   }
+  let jsonObj = JSON.stringify(node)
+  fs.writeFile('./nodeList.obscura', jsonObj, (err) => {
+    if (err) {
+      console.log(err)
+    }
+  })
 
   if (mode === 'live') {
     setTimeout(updateTable, 1750)
+
     drawTable()
   }
 }
