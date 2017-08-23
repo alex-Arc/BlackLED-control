@@ -4,13 +4,13 @@
   "description": "control interface for Vertgo's BlackLED driver",
   "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "jquery": "^3.2.1",
     "bootstrap": "^3.0.0",
-    "electron-settings": "^3.1.1",
-    "artnet": "git+https://github.com/vertigo-dk/node-artnet.git"
+    "electron-settings": "^3.1.1"
   },
   "author": "Alex Christoffer Rasmussen",
   "license": "MIT"
