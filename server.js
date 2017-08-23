@@ -41,6 +41,12 @@ $('#mode-setup').on('click', () => {
   drawTable()
 })
 
+$('#show-subTable').on('click', () => {
+  for (let i = 0; i < node.length; i++) {
+    showSubNode(i)
+  }
+})
+
 function showSubNode (n) {
   console.log('show node ' + n)
   if (showSubNodes[n] === true) {
