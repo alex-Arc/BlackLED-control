@@ -96,7 +96,11 @@ function updateTable () {
       for (let j = 0; j < node.length; j++) {
         if (controller.nodes[i].mac === node[j].mac) {
           newNode = false
+          let [ numOuts, numUniPOut, temp, fps, uUniPF] = controller.nodes[i].report.split(';')
+          node[j].uniUpdate = uUniPF
+          node[j].Fps = fps
           node[j].status = 'Online'
+
           for (let g = 0; g < node[j].subNode.length; g++) {
             if (controller.nodes[i].BindIndex === node[j].subNode[g].BindIndex) {
               newSubNode = false
@@ -122,7 +126,8 @@ function updateTable () {
       for (let g = 0; g < controller.nodes[i].numOutputs; g++) {
         portOutput[g] = tmp + controller.nodes[i].universesOutput[g]
       }
-      let obj = {mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, subNode: [{BindIndex: controller.nodes[i].BindIndex, univers: portOutput}]}
+      let [ numOuts, numUniPOut, temp, fps, uUniPF] = controller.nodes[i].report.split(';')
+      let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, subNode: [{BindIndex: controller.nodes[i].BindIndex, univers: portOutput}]}
       node.push(obj)
     }
   }
@@ -166,7 +171,13 @@ function drawTable () {
         row.insertCell(j++).innerHTML = node[i].name
         row.insertCell(j++).innerHTML = node[i].mac
         row.insertCell(j++).innerHTML = node[i].net << 8 + node[i].sub
+        row.insertCell(j++).innerHTML = node[i].Fps
+        row.insertCell(j++).innerHTML = node[i].uniUpdate
         row.insertCell(j++).innerHTML = node[i].version
+
+        if (mode === 'live') {
+          row.insertCell(j++).innerHTML = '<button type="button" class="btn btn-default btn-xs" id="' + i + '" aria-label="Settings" > <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> </button>'
+        }
         // rowCount = table.rows.length
 
         if (showSubNodes[i] === true) {
