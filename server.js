@@ -80,9 +80,28 @@ function updateTable () {
       for (let j = 0; j < node.length; j++) {
         if (controller.nodes[i].mac === node[j].mac) {
           newNode = false
-          let [ numOuts, numUniPOut, temp, fps, uUniPF] = controller.nodes[i].report.split(';')
+          var report = controller.nodes[i].report.split(';')
+          for (let r = 0; r < report.length; r++) {
+            switch (report[r]) {
+              case 'numOuts':
+                var numOuts = report[r + 1]
+                break;
+              case 'temp':
+                var temp = report[r + 1]
+                break;
+              case 'fps':
+                var fps = report[r + 1]
+                break;
+              case 'uUniPF':
+                var uUniPF = report[r + 1]
+                break;
+              default:
+
+            }
+          }
           node[j].uniUpdate = uUniPF
           node[j].Fps = fps
+          node[j].temperature = temp
           node[j].status = 'Online'
         }
       }
@@ -95,8 +114,25 @@ function updateTable () {
       for (let g = 0; g < controller.nodes[i].numOutputs; g++) {
         portOutput[g] = tmp + controller.nodes[i].universesOutput[g]
       }
-      let [ numOuts, numUniPOut, temp, fps, uUniPF] = controller.nodes[i].report.split(';')
-      let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, univers: portOutput}
+      var report = controller.nodes[i].report.split(';')
+      for (let r = 0; r < report.length; r++) {
+        switch (report[r]) {
+          case 'numOuts':
+            var numOuts = report[r + 1]
+            break;
+          case 'temp':
+            var temp = report[r + 1]
+            break;
+          case 'fps':
+            var fps = report[r + 1]
+            console.log(fps)
+            break;
+          default:
+
+        }
+      }
+      //let [, numOuts, , numUniPOut, , temp, , fps, , uUniPF] = controller.nodes[i].report.split(';')
+      let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, univers: portOutput, temperature: temp}
       node.push(obj)
     }
   }
