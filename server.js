@@ -41,21 +41,6 @@ $('#mode-setup').on('click', () => {
   drawTable()
 })
 
-$('#show-subTable').on('click', () => {
-  for (let i = 0; i < node.length; i++) {
-    showSubNode(i)
-  }
-})
-
-function showSubNode (n) {
-  console.log('show node ' + n)
-  if (showSubNodes[n] === true) {
-    showSubNodes[n] = false
-  } else {
-    showSubNodes[n] = true
-  }
-  drawTable()
-}
 // function addEntry (bindIndex, ip, mac, name, version, numOutputs, universesOutput, net, subnet, report, status) {
 //   //  if(mac && net){
 //   n++
@@ -91,7 +76,6 @@ function updateTable () {
   for (let i = 0; i < controller.nodes.length; i++) {
     // console.log(controller.nodes[i])
     var newNode = true
-    var newSubNode = true
     if (node.length > 0) {
       for (let j = 0; j < node.length; j++) {
         if (controller.nodes[i].mac === node[j].mac) {
@@ -100,21 +84,6 @@ function updateTable () {
           node[j].uniUpdate = uUniPF
           node[j].Fps = fps
           node[j].status = 'Online'
-
-          for (let g = 0; g < node[j].subNode.length; g++) {
-            if (controller.nodes[i].BindIndex === node[j].subNode[g].BindIndex) {
-              newSubNode = false
-            }
-          }
-          if (newSubNode === true) {
-            let tmp = controller.nodes[i].net << 8 + controller.nodes[i].subnet << 4
-            let portOutput = []
-            for (let g = 0; g < controller.nodes[i].numOutputs; g++) {
-              portOutput[g] = tmp + controller.nodes[i].universesOutput[g]
-            }
-            let obj = {BindIndex: controller.nodes[i].BindIndex, univers: portOutput}
-            node[j].subNode.push(obj)
-          }
         }
       }
     }
@@ -127,7 +96,7 @@ function updateTable () {
         portOutput[g] = tmp + controller.nodes[i].universesOutput[g]
       }
       let [ numOuts, numUniPOut, temp, fps, uUniPF] = controller.nodes[i].report.split(';')
-      let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, subNode: [{BindIndex: controller.nodes[i].BindIndex, univers: portOutput}]}
+      let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, univers: portOutput}
       node.push(obj)
     }
   }
@@ -157,12 +126,6 @@ function drawTable () {
         // let rowCount = table.rows.length
         let row = table.insertRow(-1)
         let j = 0
-        if (showSubNodes[i] === true) {
-          row.insertCell(j++).innerHTML = '<button type="button" class="btn btn-default btn-xs" id="' + i + '" aria-label="show sub nodes" onClick="showSubNode(' + i + ')"> <span class="glyphicon glyphicon-menu-down" aria-hidden="true"> </span> </button>'
-        } else {
-          row.insertCell(j++).innerHTML = '<button type="button" class="btn btn-default btn-xs" id="' + i + '" aria-label="show sub nodes" onClick="showSubNode(' + i + ')"> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"> </span> </button>'
-        }
-
         if (node[i].status === 'Online') {
           row.insertCell(j++).innerHTML = '<span class="label label-primary col-md-1">' + node[i].status + '</span>'
         } else if (node[i].status === 'Offline') {
@@ -178,39 +141,6 @@ function drawTable () {
         if (mode === 'live') {
           row.insertCell(j++).innerHTML = '<button type="button" class="btn btn-default btn-xs" id="' + i + '" aria-label="Settings" > <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> </button>'
         }
-        // rowCount = table.rows.length
-
-        if (showSubNodes[i] === true) {
-          for (let g = 0; g < node[i].subNode.length; g++) {
-            row = table.insertRow(-1)
-            row.insertCell(-1).innerHTML = '#' + node[i].subNode[g].BindIndex
-            for (let y = 0; y < 4; y++) {
-              row.insertCell(-1).innerHTML = 'Port.' + abc[y] + ' ' + node[i].subNode[g].univers[y]
-            }
-          }
-        }
-      //   if (mode == 'live') {
-      //     if(nodes[i].status == 'Online'){
-      //       row.insertCell(j++).innerHTML = '<span class='label label-primary col-md-1'>' + nodes[i].status + '</span>'
-      //     }else if(nodes[i].status == 'Offline') {
-      //       row.insertCell(j++).innerHTML = '<span class='label label-danger col-md-1'>' + nodes[i].status + '</span>'
-      //     }
-      //     row.insertCell(j++).innerHTML = nodes[i].name
-      //     row.insertCell(j++).innerHTML = nodes[i].mac
-      //     row.insertCell(j++).innerHTML = nodes[i].mac
-      //     row.insertCell(j++).innerHTML = nodes[i].version
-      //     // row.insertCell(3).innerHTML ='<button type='button' class='btn btn-default' aria-label='cofig'> <span class='glyphicon glyphicon-cog' aria-hidden='true'></span></button>'
-      //   }else if (mode = 'setup') {
-      //     if(nodes[i].status == 'Online'){
-      //       row.insertCell(j++).innerHTML = '<span class='label label-primary'>' + nodes[i].status + '</span>'
-      //     }else if(nodes[i].status == 'Offline') {
-      //       row.insertCell(j++).innerHTML = '<span class='label label-danger'>' + nodes[i].status + '</span>'
-      //     }
-      //     row.insertCell(j++).innerHTML = '<p onclick='newNodeName(''+nodes[i].mac +'')>' + nodes[i].name + '</p>'
-      //     row.insertCell(j++).innerHTML = nodes[i].mac
-      //     row.insertCell(j++).innerHTML = nodes[i].version
-      //     row.insertCell(j++).innerHTML ='<button type='button' class='btn btn-default' aria-label='cofig'> <span class='glyphicon glyphicon-cog' aria-hidden='true'></span></button>'
-      //   }
       }
     }
   }
