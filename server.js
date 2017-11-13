@@ -172,6 +172,7 @@ function drawTable () {
         row.insertCell(j++).innerHTML = node[i].net << 8 + node[i].sub
         row.insertCell(j++).innerHTML = node[i].Fps
         row.insertCell(j++).innerHTML = node[i].uniUpdate
+        row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
         row.insertCell(j++).innerHTML = node[i].version
 
         if (mode === 'live') {
