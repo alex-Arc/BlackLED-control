@@ -41,26 +41,12 @@ $('#mode-setup').on('click', () => {
   drawTable()
 })
 
-// function addEntry (bindIndex, ip, mac, name, version, numOutputs, universesOutput, net, subnet, report, status) {
-//   //  if(mac && net){
-//   n++
-//   var obj = {MAC: mac, NAME: name, BIND: bindIndex}
-//   var jsonObj = JSON.stringify(obj)
-//   fs.appendFile('./nodeList.obscura', jsonObj + '\n')
-//   //  }
-// }
-
 function loadTable () {
-  if (fs.existsSync('./nodeList.obscura')) {
-    let data = fs.readFileSync(filename, 'utf8').split('\n')
-    data.forEach((node, index) => {
-      let [ ip, mac, name, version, numOutputs, universesOutput, net, subnet, report, status ] = node.split(',')
-      //  addEntry(ip, mac, name, version, numOutputs, universesOutput, net, subnet, report, status)
-      nodes.push(new BlackLED(ip, mac, name, version, numOutputs, universesOutput, net, subnet, report, status))
-    })
+  if (fs.existsSync('./nodeList.json')) {
+    nodes = fs.readFileSync(filename, 'utf8').split('\n')
   } else {
     console.log('File Doesn\'t Exist. Creating new file.')
-    fs.writeFile('./nodeList.obscura', '', (err) => {
+    fs.writeFile('./nodeList.json', '', (err) => {
       if (err) {
         console.log(err)
       }
@@ -139,8 +125,8 @@ function updateTable () {
   if (controller.nodes.length <= 0) {
     console.log('No ArtNet nodes found')
   }
-  let jsonObj = JSON.stringify(node)
-  fs.writeFile('./nodeList.obscura', jsonObj, (err) => {
+  let jsonObj = JSON.stringify(node, null, '\t')
+  fs.writeFile('./nodeList.json', jsonObj, (err) => {
     if (err) {
       console.log(err)
     }
