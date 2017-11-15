@@ -3,7 +3,7 @@ var controller = ArtNet.createController()
 
 let $ = require('jquery')
 let fs = require('fs')
-let filename = 'nodeList.obscura'
+let filename = 'nodeList.json'
 // let n = 0
 var nodes = []
 var mode = 'live'
@@ -71,16 +71,16 @@ function updateTable () {
             switch (report[r]) {
               case 'numOuts':
                 var numOuts = report[r + 1]
-                break;
+                break
               case 'temp':
                 var temp = report[r + 1]
-                break;
+                break
               case 'fps':
                 var fps = report[r + 1]
-                break;
+                break
               case 'uUniPF':
                 var uUniPF = report[r + 1]
-                break;
+                break
               default:
 
             }
@@ -100,24 +100,18 @@ function updateTable () {
       for (let g = 0; g < controller.nodes[i].numOutputs; g++) {
         portOutput[g] = tmp + controller.nodes[i].universesOutput[g]
       }
-      var report = controller.nodes[i].report.split(';')
+      let report = controller.nodes[i].report.split(';')
       for (let r = 0; r < report.length; r++) {
         switch (report[r]) {
-          case 'numOuts':
-            var numOuts = report[r + 1]
-            break;
           case 'temp':
             var temp = report[r + 1]
-            break;
+            break
           case 'fps':
             var fps = report[r + 1]
-            console.log(fps)
-            break;
+            break
           default:
-
         }
       }
-      //let [, numOuts, , numUniPOut, , temp, , fps, , uUniPF] = controller.nodes[i].report.split(';')
       let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, univers: portOutput, temperature: temp}
       node.push(obj)
     }
@@ -168,19 +162,6 @@ function drawTable () {
     }
   }
 }
-
-function BlackLED (ip, mac, name, version, numOutputs, universesOutput, net, subnet, report, status) {
-  this.ip = ip
-  this.mac = mac
-  this.name = name
-  this.version = version
-  this.numOutputs = numOutputs
-  this.universesOutput = universesOutput
-  this.net = net
-  this.subnet = subnet
-  this.report = report
-  this.status = status
-};
 
 controller.refreshClients()
 updateTable()
