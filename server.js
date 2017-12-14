@@ -119,7 +119,7 @@ function updateTable () {
   if (controller.nodes.length <= 0) {
     console.log('No ArtNet nodes found')
   }
-  let jsonObj = JSON.stringify(node, null, '\t')
+  let jsonObj = JSON.stringify(node)
   fs.writeFile('./nodeList.json', jsonObj, (err) => {
     if (err) {
       console.log(err)
