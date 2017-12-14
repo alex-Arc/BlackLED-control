@@ -127,7 +127,7 @@ function updateTable () {
   })
 
   if (mode === 'live') {
-    setTimeout(updateTable, 1750)
+    setTimeout(updateTable, 4050)
 
     drawTable()
   }
