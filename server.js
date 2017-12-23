@@ -1,29 +1,49 @@
-var ArtNet = require('artnet')
-var controller = ArtNet.createController()
+let ArtNet = require('artnet')
+let controller = ArtNet.createController()
+
+let network = require('network')
 
 let $ = require('jquery')
+
 let fs = require('fs')
-let filename = 'nodeList.json'
+let filename = './nodeList.json'
+if (fs.existsSync('BlackLED.log')) {
+  fs.unlinkSync('BlackLED.log')
+}
+
+let winston = require('winston')
+let logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({ level: 'info' }),
+    new (winston.transports.File)({
+      filename: 'BlackLED.log',
+      level: 'info'
+    })
+  ]
+})
+
 // let n = 0
-var nodes = []
-var mode = 'live'
-var showSubNodes = []
+let mode = 'live'
+let showSubNodes = []
 
 var node = []
 
 var abc = ['A', 'B', 'C', 'D']
 
 $('#update-table').on('click', () => {
+  logger.verbose(JSON.stringify({button: 'update-table'}))
   updateTable()
   drawTable()
 })
 
 $('#clear-all').on('lclick', () => {
+  logger.verbose(JSON.stringify({button: 'clear-all'}))
   node = undefined
   drawTable()
 })
 
 $('#mode-live').on('click', () => {
+  logger.verbose(JSON.stringify({button: 'mode-live'}))
   document.getElementById('mode-live').className = 'btn btn-primary active'
   document.getElementById('mode-setup').className = 'btn btn-default'
   document.getElementById('clear-all').setAttribute('disabled', 'disabled')
@@ -33,6 +53,7 @@ $('#mode-live').on('click', () => {
 })
 
 $('#mode-setup').on('click', () => {
+  logger.verbose(JSON.stringify({button: 'mode-setup'}))
   document.getElementById('mode-setup').className = 'btn btn-primary active'
   document.getElementById('mode-live').className = 'btn btn-default'
   document.getElementById('clear-all').removeAttribute('disabled')
@@ -41,14 +62,25 @@ $('#mode-setup').on('click', () => {
   drawTable()
 })
 
-function loadTable () {
-  if (fs.existsSync('./nodeList.json')) {
-    nodes = fs.readFileSync(filename, 'utf8').split('\n')
+network.get_interfaces_list(function (err, interfaceList) {
+  if (err) {
+    logger.error(err)
   } else {
-    console.log('File Doesn\'t Exist. Creating new file.')
+    logger.verbose(interfaceList)
+  }
+})
+
+function loadTable () {
+  logger.verbose('loading table')
+  if (fs.existsSync(filename)) {
+    logger.verbose('from file: ' + filename)
+    node = JSON.parse(fs.readFileSync(filename, 'utf8'))
+    logger.verbose(JSON.parse(fs.readFileSync(filename, 'utf8')))
+  } else {
+    logger.warn('File Doesn\'t Exist. Creating new file.')
     fs.writeFile('./nodeList.json', '', (err) => {
       if (err) {
-        console.log(err)
+        logger.error(err)
       }
     })
   }
@@ -60,7 +92,7 @@ function updateTable () {
     node[i].status = 'Offline'
   }
   for (let i = 0; i < controller.nodes.length; i++) {
-    // console.log(controller.nodes[i])
+    logger.verbose(controller.nodes[i])
     var newNode = true
     if (node.length > 0) {
       for (let j = 0; j < node.length; j++) {
@@ -82,7 +114,6 @@ function updateTable () {
                 var uUniPF = report[r + 1]
                 break
               default:
-
             }
           }
           node[j].uniUpdate = uUniPF
@@ -116,13 +147,20 @@ function updateTable () {
       node.push(obj)
     }
   }
-  if (controller.nodes.length <= 0) {
-    console.log('No ArtNet nodes found')
+  if (node.length <= 0) {
+    logger.log('warn', JSON.stringify({numNodes: 0}))
+  } else {
+    logger.log('info', JSON.stringify({numNodes: node.length}))
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].status === 'Offline') {
+        logger.log('warn', JSON.stringify({offlineNodes: node[i].name}))
+      }
+    }
   }
-  let jsonObj = JSON.stringify(node)
+  let jsonObj = JSON.stringify(node, null, '\t')
   fs.writeFile('./nodeList.json', jsonObj, (err) => {
     if (err) {
-      console.log(err)
+      logger.error(err)
     }
   })
 
@@ -136,7 +174,7 @@ function updateTable () {
 function drawTable () {
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
-  if (nodes.length > 0) {
+  if (node.length > 0) {
     for (var i = 0; i < node.length; i++) {
       if (node[i].mac !== undefined) {
         // let rowCount = table.rows.length
@@ -162,7 +200,6 @@ function drawTable () {
     }
   }
 }
-
-controller.refreshClients()
-updateTable()
 loadTable()
+updateTable()
+controller.refreshClients()
