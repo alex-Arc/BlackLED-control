@@ -25,6 +25,4 @@ hs_err_pid*
 *.obscura
 /node_modules/
 
-package-lock\.json
-
 nodeList\.json
