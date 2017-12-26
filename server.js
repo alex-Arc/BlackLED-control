@@ -1,34 +1,18 @@
 let ArtNet = require('artnet')
 let controller = ArtNet.createController()
 
+const remote = require('electron').remote
+const logger = remote.getGlobal('logger')
+var node = remote.getGlobal('sharedObj').node
+
 let network = require('network')
 
 let $ = require('jquery')
 
-let fs = require('fs')
-let filename = './nodeList.json'
-if (fs.existsSync('BlackLED.log')) {
-  fs.unlinkSync('BlackLED.log')
-}
-
-let winston = require('winston')
-let logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({ level: 'info' }),
-    new (winston.transports.File)({
-      filename: 'BlackLED.log',
-      level: 'info'
-    })
-  ]
-})
-
 // let n = 0
 let mode = 'live'
-let showSubNodes = []
-
-var node = []
-
-var abc = ['A', 'B', 'C', 'D']
+// let showSubNodes = []
+// var abc = ['A', 'B', 'C', 'D']
 
 $('#update-table').on('click', () => {
   logger.verbose(JSON.stringify({button: 'update-table'}))
@@ -70,22 +54,22 @@ network.get_interfaces_list(function (err, interfaceList) {
   }
 })
 
-function loadTable () {
-  logger.verbose('loading table')
-  if (fs.existsSync(filename)) {
-    logger.verbose('from file: ' + filename)
-    node = JSON.parse(fs.readFileSync(filename, 'utf8'))
-    logger.verbose(JSON.parse(fs.readFileSync(filename, 'utf8')))
-  } else {
-    logger.warn('File Doesn\'t Exist. Creating new file.')
-    fs.writeFile('./nodeList.json', '', (err) => {
-      if (err) {
-        logger.error(err)
-      }
-    })
-  }
-  updateTable()
-}
+// function loadTable () {
+//   logger.verbose('loading table')
+//   if (fs.existsSync(filename)) {
+//     logger.verbose('from file: ' + filename)
+//     node = JSON.parse(fs.readFileSync(filename, 'utf8'))
+//     logger.verbose(JSON.parse(fs.readFileSync(filename, 'utf8')))
+//   } else {
+//     logger.warn('File Doesn\'t Exist. Creating new file.')
+//     fs.writeFile('./nodeList.json', '', (err) => {
+//       if (err) {
+//         logger.error(err)
+//       }
+//     })
+//   }
+//   updateTable()
+// }
 
 function updateTable () {
   for (let i = 0; i < node.length; i++) {
@@ -148,25 +132,18 @@ function updateTable () {
     }
   }
   if (node.length <= 0) {
-    logger.log('warn', JSON.stringify({numNodes: 0}))
+    logger.warn(JSON.stringify({numNodes: 0}))
   } else {
-    logger.log('info', JSON.stringify({numNodes: node.length}))
+    logger.info(JSON.stringify({numNodes: node.length}))
     for (let i = 0; i < node.length; i++) {
       if (node[i].status === 'Offline') {
-        logger.log('warn', JSON.stringify({offlineNodes: node[i].name}))
+        logger.warn(JSON.stringify({offlineNodes: node[i].name}))
       }
     }
+    logger.verbose(node)
   }
-  let jsonObj = JSON.stringify(node, null, '\t')
-  fs.writeFile('./nodeList.json', jsonObj, (err) => {
-    if (err) {
-      logger.error(err)
-    }
-  })
-
   if (mode === 'live') {
     setTimeout(updateTable, 4050)
-
     drawTable()
   }
 }
@@ -200,6 +177,6 @@ function drawTable () {
     }
   }
 }
-loadTable()
+// loadTable()
 updateTable()
 controller.refreshClients()
