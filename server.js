@@ -127,8 +127,9 @@ function updateTable () {
     }
     logger.debug(node)
   }
+  logger.info(JSON.stringify({currentFPS: controller.fps}))
   if (mode === 'live') {
-    setTimeout(updateTable, 4050)
+    setTimeout(updateTable, 4000)
     drawTable()
     let jsonObj = JSON.stringify(node, null, '\t')
     logger.debug(jsonObj)

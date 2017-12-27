@@ -14,7 +14,7 @@
     "build": ""
   },
   "dependencies": {
-    "artnet": "git+https://github.com/alex-Arc/node-artnet.git#/count_sync_packet",
+    "artnet": "git+https://github.com/alex-Arc/node-artnet.git",
     "electron-settings": "^3.1.1",
     "jquery": "^3.2.1",
     "network": "^0.4.0",
