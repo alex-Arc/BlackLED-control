@@ -3,7 +3,9 @@ let controller = ArtNet.createController()
 
 const remote = require('electron').remote
 const logger = remote.getGlobal('logger')
-var node = remote.getGlobal('sharedObj').node
+const fs = remote.getGlobal('fs')
+const nodeList = remote.getGlobal('nodeList')
+let node = remote.getGlobal('node')
 
 let network = require('network')
 
@@ -53,23 +55,6 @@ network.get_interfaces_list(function (err, interfaceList) {
     logger.verbose(interfaceList)
   }
 })
-
-// function loadTable () {
-//   logger.verbose('loading table')
-//   if (fs.existsSync(filename)) {
-//     logger.verbose('from file: ' + filename)
-//     node = JSON.parse(fs.readFileSync(filename, 'utf8'))
-//     logger.verbose(JSON.parse(fs.readFileSync(filename, 'utf8')))
-//   } else {
-//     logger.warn('File Doesn\'t Exist. Creating new file.')
-//     fs.writeFile('./nodeList.json', '', (err) => {
-//       if (err) {
-//         logger.error(err)
-//       }
-//     })
-//   }
-//   updateTable()
-// }
 
 function updateTable () {
   for (let i = 0; i < node.length; i++) {
@@ -140,11 +125,14 @@ function updateTable () {
         logger.warn(JSON.stringify({offlineNodes: node[i].name}))
       }
     }
-    logger.verbose(node)
+    logger.debug(node)
   }
   if (mode === 'live') {
     setTimeout(updateTable, 4050)
     drawTable()
+    let jsonObj = JSON.stringify(node, null, '\t')
+    logger.debug(jsonObj)
+    fs.writeFileSync(nodeList, jsonObj)
   }
 }
 
@@ -177,6 +165,5 @@ function drawTable () {
     }
   }
 }
-// loadTable()
 updateTable()
 controller.refreshClients()

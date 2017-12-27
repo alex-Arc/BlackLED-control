@@ -1,4 +1,5 @@
 const {app, BrowserWindow} = require('electron')
+const remote = require('electron').remote
 const url = require('url')
 const path = require('path')
 
@@ -15,9 +16,10 @@ let logFile = path.join(logFolder, new Date().toISOString().replace(/:/g, '.') +
 const logger = require('winston')
 logger.clear()
 // if (process.env.NODE_ENV !== 'production') {
-logger.add(logger.transports.Console, {colorize: true, level: 'debug'}) //  }
-
-global.sharedObj = {node: []}
+logger.add(logger.transports.Console, {colorize: true, level: 'verbose'}) //  }
+let node = []
+global.fs = fs
+global.nodeList = nodeList
 global.logger = logger
 
 function startUp () {
@@ -45,11 +47,6 @@ app.on('will-quit', function () {
 
 app.on('window-all-closed', function () {
   logger.verbose('window-all-closed')
-  logger.verbose(global.sharedObj.node)
-  let jsonObj = JSON.stringify(global.sharedObj.node, null, '\t')
-  logger.verbose(jsonObj)
-  fs.writeFileSync(nodeList, jsonObj)
-  logger.verbose('window-all-closed...')
   app.quit()
 })
 
@@ -66,19 +63,20 @@ app.on('activate', function () {
 function loadFiles () {
   fs.open(nodeList, 'r+', (err, fd) => {
     if (err) {
-      if (err.code === 'EEXIST') {
-        fs.readFile(nodeList, 'utf8', (err, data) => {
-          if (err) throw err
-          logger.verbose('reading from node file')
-          node = JSON.parse(data)
-        })
-        return
-      } else if (err.code === 'ENOENT') {
+      if (err.code === 'ENOENT') {
         logger.verbose('no node file')
         return
       }
       logger.error('open1 error: ' + err.code)
       throw err
+    } else {
+      fs.readFile(nodeList, 'utf8', (err, data) => {
+        if (err) throw err
+        logger.verbose('reading from node file')
+        logger.debug(data)
+        node = JSON.parse(data)
+        global.node = node
+      })
     }
   })
   fs.open(logFolder, 'r', (err, fd) => {
