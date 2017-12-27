@@ -75,10 +75,10 @@ function loadFiles () {
         logger.verbose('reading from node file')
         logger.debug(data)
         node = JSON.parse(data)
-        global.node = node
       })
     }
   })
+  global.node = node
   fs.open(logFolder, 'r', (err, fd) => {
     if (err) {
       if (err.code === 'EEXIST') {
