@@ -17,19 +17,19 @@ let mode = 'live'
 // var abc = ['A', 'B', 'C', 'D']
 
 $('#update-table').on('click', () => {
-  logger.verbose(JSON.stringify({button: 'update-table'}))
+  logger.verbose({button: 'update-table'})
   updateTable()
   drawTable()
 })
 
 $('#clear-all').on('lclick', () => {
-  logger.verbose(JSON.stringify({button: 'clear-all'}))
+  logger.verbose({button: 'clear-all'})
   node = undefined
   drawTable()
 })
 
 $('#mode-live').on('click', () => {
-  logger.verbose(JSON.stringify({button: 'mode-live'}))
+  logger.verbose({button: 'mode-live'})
   document.getElementById('mode-live').className = 'btn btn-primary active'
   document.getElementById('mode-setup').className = 'btn btn-default'
   document.getElementById('clear-all').setAttribute('disabled', 'disabled')
@@ -39,7 +39,7 @@ $('#mode-live').on('click', () => {
 })
 
 $('#mode-setup').on('click', () => {
-  logger.verbose(JSON.stringify({button: 'mode-setup'}))
+  logger.verbose({button: 'mode-setup'})
   document.getElementById('mode-setup').className = 'btn btn-primary active'
   document.getElementById('mode-live').className = 'btn btn-default'
   document.getElementById('clear-all').removeAttribute('disabled')
@@ -117,18 +117,19 @@ function updateTable () {
     }
   }
   if (node.length <= 0) {
-    logger.warn(JSON.stringify({numNodes: 0}))
+    logger.warn({numNodes: 0})
   } else {
-    logger.info(JSON.stringify({numNodes: node.length}))
+    logger.info({numNodes: node.length})
     for (let i = 0; i < node.length; i++) {
       if (node[i].status === 'Offline') {
-        logger.warn(JSON.stringify({offlineNodes: node[i].name}))
+        logger.warn({offlineNodes: node[i].name})
       }
     }
     logger.debug(node)
   }
+  logger.info({currentFPS: controller.fps})
   if (mode === 'live') {
-    setTimeout(updateTable, 4050)
+    setTimeout(updateTable, 4000)
     drawTable()
     let jsonObj = JSON.stringify(node, null, '\t')
     logger.debug(jsonObj)
