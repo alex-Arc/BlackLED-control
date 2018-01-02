@@ -119,12 +119,14 @@ function updateTable () {
   if (node.length <= 0) {
     logger.warn({numNodes: 0})
   } else {
-    logger.info({numNodes: node.length})
+    let nodeLog = {numNodes: node.length, numOfflineNodes: 0, offlineNodes: []}
     for (let i = 0; i < node.length; i++) {
       if (node[i].status === 'Offline') {
-        logger.warn({offlineNodes: node[i].name})
+        nodeLog.offlineNodes.push(node[i].name)
+        nodeLog.numOfflineNodes++
       }
     }
+    logger.info(nodeLog)
     logger.debug(node)
   }
   logger.info({currentFPS: controller.fps})
