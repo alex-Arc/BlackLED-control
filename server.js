@@ -11,6 +11,8 @@ let network = require('network')
 
 let $ = require('jquery')
 
+let Dnode
+
 // let n = 0
 let mode = 'live'
 // let showSubNodes = []
@@ -139,27 +141,62 @@ function updateTable () {
   }
 }
 
+function compareMac (a, b) {
+  if (a.mac < b.mac) {
+    return -1
+  }
+  if (a.mac > b.mac) {
+    return 1
+  }
+  return 0
+}
+
+function compareName (a, b) {
+  if (a.name < b.name) {
+    return -1
+  }
+  if (a.name > b.name) {
+    return 1
+  }
+  return 0
+}
+
+function compareAddr (a, b) {
+  let c = a.net << 8 + a.sub
+  let d = a.net << 8 + a.sub
+  if (c < d) {
+    return -1
+  }
+  if (c > d) {
+    return 1
+  }
+  return 0
+}
+
 function drawTable () {
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
   if (node.length > 0) {
-    for (var i = 0; i < node.length; i++) {
-      if (node[i].mac !== undefined) {
+    Dnode = node
+    Dnode.sort(compareName)
+    // Dnode.reverse()
+    for (var i = 0; i < Dnode.length; i++) {
+      if (Dnode[i].mac !== undefined) {
         // let rowCount = table.rows.length
         let row = table.insertRow(-1)
         let j = 0
-        if (node[i].status === 'Online') {
-          row.insertCell(j++).innerHTML = '<span class="label label-primary col-md-1">' + node[i].status + '</span>'
-        } else if (node[i].status === 'Offline') {
-          row.insertCell(j++).innerHTML = '<span class="label label-danger col-md-1">' + node[i].status + '</span>'
+        if (Dnode[i].status === 'Online') {
+          row.insertCell(j++).innerHTML = '<span class="label label-primary col-md-1">' + Dnode[i].status + '</span>'
+        } else if (Dnode[i].status === 'Offline') {
+          row.insertCell(j++).innerHTML = '<span class="label label-danger col-md-1">' + Dnode[i].status + '</span>'
         }
-        row.insertCell(j++).innerHTML = node[i].name
-        row.insertCell(j++).innerHTML = node[i].mac
-        row.insertCell(j++).innerHTML = node[i].net << 8 + node[i].sub
-        row.insertCell(j++).innerHTML = node[i].Fps
-        row.insertCell(j++).innerHTML = node[i].uniUpdate
-        row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
-        row.insertCell(j++).innerHTML = node[i].version
+        row.insertCell(j++).innerHTML = Dnode[i].name
+        row.insertCell(j++).innerHTML = Dnode[i].mac
+        row.insertCell(j++).innerHTML = Dnode[i].net << 8 + Dnode[i].sub
+        row.insertCell(j++).innerHTML = Dnode[i].Fps
+        row.insertCell(j++).innerHTML = Dnode[i].uniUpdate
+        row.insertCell(j++).innerHTML = Dnode[i].temperature + ' C°'
+        row.insertCell(j++).innerHTML = Dnode[i].version
 
         if (mode === 'live') {
           row.insertCell(j++).innerHTML = '<button type="button" class="btn btn-default btn-xs" id="' + i + '" aria-label="Settings" > <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> </button>'
