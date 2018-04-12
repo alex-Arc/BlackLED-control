@@ -174,6 +174,8 @@ function compareAddr (a, b) {
 }
 
 function drawTable () {
+  let Fps_disp = document.getElementById('Fps-disp')
+  Fps_disp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
   if (node.length > 0) {
