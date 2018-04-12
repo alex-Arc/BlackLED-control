@@ -24,7 +24,7 @@
   "author": "Alex Christoffer Rasmussen",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^1.7.12",
+    "electron": "1.8.4",
     "electron-packager": "^9.1.0",
     "semver": "^5.3.0"
   }
