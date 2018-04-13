@@ -34,10 +34,21 @@
             <table class="table table-hover" id="node-table">
               <thead>
                 <tr>
-                  <th class="col-md-1">Status</th>
-                  <th>Name</th>
+                  <th class="col-md-1">Status
+                    <button type="button" class="btn btn-default btn-xs" id="statusSort" aria-label="" >
+                      <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"> </span>
+                    </button>
+                  </th>
+                  <th class="col-md-4">Name
+                    <button type="button" class="btn btn-default btn-xs" id="nameSort" aria-label="" >
+                      <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"> </span>
+                    </button>
+                  </th>
                   <th class="col-md-4">MAC</th>
-                  <th class="col-md-4">Addr.</th>
+                  <th class="col-md-4">Addr.
+                    <button type="button" class="btn btn-default btn-xs" id="addrSort" aria-label="" >
+                      <span class="glyphicon glyphicon-sort-by-order" aria-hidden="true"> </span>
+                    </button></th>
                   <th class="col-md-2">Fps</th>
                   <th class="col-md-2">Uni update</th>
                   <th class="col-md-2">Temperature</th>
