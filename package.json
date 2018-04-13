@@ -10,7 +10,7 @@
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-packager .",
+    "package": "electron-packager . --overwrite",
     "build": ""
   },
   "dependencies": {
