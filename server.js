@@ -155,8 +155,8 @@ function compareAddr (a, b) {
 }
 
 function drawTable () {
-  let Fps_disp = document.getElementById('Fps-disp')
-  Fps_disp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
+  let fpsDisp = document.getElementById('Fps-disp')
+  fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
   if (node.length > 0) {
@@ -169,7 +169,7 @@ function drawTable () {
         let row = table.insertRow(-1)
         let j = 0
         if (Dnode[i].status === 'Online') {
-          row.insertCell(j++).innerHTML = '<span class="label label-primary col-md-1">' + Dnode[i].status + '</span>'
+          row.insertCell(j++).innerHTML = '<span class="label label-success col-md-1">' + Dnode[i].status + '</span>'
         } else if (Dnode[i].status === 'Offline') {
           row.insertCell(j++).innerHTML = '<span class="label label-danger col-md-1">' + Dnode[i].status + '</span>'
         }
@@ -182,7 +182,7 @@ function drawTable () {
         row.insertCell(j++).innerHTML = Dnode[i].temperature + ' C°'
         row.insertCell(j++).innerHTML = Dnode[i].version
 
-        if (mode === 'live') {
+        if (mode === 'setup') {
           row.insertCell(j++).innerHTML = '<button type="button" class="btn btn-default btn-xs" id="' + i + '" aria-label="Settings" > <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> </button>'
         }
       }
