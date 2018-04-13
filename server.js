@@ -95,26 +95,7 @@ function updateTable () {
       }
     }
     if (newNode === true) {
-      let tmp = controller.nodes[i].net << 8 + controller.nodes[i].subnet << 4
-      // for (int i = )
-      // let
-      let portOutput = []
-      for (let g = 0; g < controller.nodes[i].numOutputs; g++) {
-        portOutput[g] = tmp + controller.nodes[i].universesOutput[g]
-      }
-      let report = controller.nodes[i].report.split(';')
-      for (let r = 0; r < report.length; r++) {
-        switch (report[r]) {
-          case 'temp':
-            var temp = report[r + 1]
-            break
-          case 'fps':
-            var fps = report[r + 1]
-            break
-          default:
-        }
-      }
-      let obj = {Fps: fps, uniUpdate: uUniPF, mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, univers: portOutput, temperature: temp}
+      let obj = {mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput}
       node.push(obj)
     }
   }
@@ -194,7 +175,8 @@ function drawTable () {
         }
         row.insertCell(j++).innerHTML = Dnode[i].name
         row.insertCell(j++).innerHTML = Dnode[i].mac
-        row.insertCell(j++).innerHTML = Dnode[i].net << 8 + Dnode[i].sub
+        let addr = (Dnode[i].net << 8) + (Dnode[i].subnet << 4) + Dnode[i].univers[0]
+        row.insertCell(j++).innerHTML = addr
         row.insertCell(j++).innerHTML = Dnode[i].Fps
         row.insertCell(j++).innerHTML = Dnode[i].uniUpdate
         row.insertCell(j++).innerHTML = Dnode[i].temperature + ' C°'
