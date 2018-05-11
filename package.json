@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/alex-Arc/BlackLED-control.git"
   },
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
