@@ -3,6 +3,8 @@ const remote = require('electron').remote
 const url = require('url')
 const path = require('path')
 
+require('electron-reload')(__dirname)
+
 let mainWindow
 
 // console.log('test 1 2 3!')
@@ -29,9 +31,9 @@ function startUp () {
 }
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width: 800, height: 1000})
+  mainWindow = new BrowserWindow({width: 900, height: 950})
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'), protocol: 'file:', slashes: true
+    pathname: path.join(__dirname, '/html/index.html'), protocol: 'file:', slashes: true
   }))
   mainWindow.on('closed', function () {
     logger.verbose('window closed')
