@@ -1,0 +1,92 @@
+body {
+  background-color: #000;
+  color: #FFF;
+  font-family: "Lucida Console";
+  font-size: 18px;
+}
+
+ul {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+button {
+  font-family: "Lucida Console";
+  font-size: 15px;
+  color: #FFF;
+  border-radius: 2px;
+  padding: 2px 6px 2px;
+}
+
+button:disabled {
+  color: #555;
+}
+
+button.btn-primary {
+  background-color: #44D;
+  border: 2px solid #44D;
+}
+
+button.btn-default {
+  background-color: #444;
+  border: 2px solid #444;
+}
+
+button.btn-xl {
+  font-size: 18px;
+  padding: 5px 10px 5px;
+}
+
+button.btn-vis {
+  color: #FFF;
+}
+
+.col-1 {
+  width: 50px
+}
+
+.col-2 {
+  width: 100px
+}
+
+.col-3 {
+  width: 150px
+}
+
+.col-4 {
+  width: 200px
+}
+
+.col-5 {
+  width: 250px
+}
+
+#node-table {
+  border-collapse: collapse;
+  /* table-layout: fixed; */
+  /* width: 100%; */
+}
+
+#node-table td, #node-table th {
+  border: 1px solid #ddd;
+  padding: 2px 10px 2px;
+  overflow: hidden;
+}
+
+.resize-hz {
+  resize: horizontal;
+}
+
+#node-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#node-table tr:hover {background-color: #ddd;}
+
+#node-table th {
+  position: static;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: left;
+  background-color: #555;
+  color: white;
+}
