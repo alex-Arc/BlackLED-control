@@ -18,7 +18,7 @@ let logFile = path.join(logFolder, new Date().toISOString().replace(/:/g, '.') +
 const logger = require('winston')
 logger.clear()
 // if (process.env.NODE_ENV !== 'production') {
-logger.add(logger.transports.Console, {colorize: true, level: 'error'}) //  }
+logger.add(logger.transports.Console, {colorize: true, level: 'verbose'}) //  }
 let node = []
 global.fs = fs
 global.nodeList = nodeList
