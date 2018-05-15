@@ -48,6 +48,7 @@ function updateTable () {
               default:
             }
           }
+          node[j].numOuts = numOuts
           node[j].uniUpdate = uUniPF
           node[j].Fps = fps
           node[j].temperature = temp
@@ -56,7 +57,7 @@ function updateTable () {
       }
     }
     if (newNode === true) {
-      let obj = {mac: controller.nodes[i].mac, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput}
+      let obj = {mac: controller.nodes[i].mac, ip: controller.nodes[i].ip, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput}
       node.push(obj)
     }
   }
@@ -86,7 +87,6 @@ function drawTable () {
   // fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
-  console.log('draw ' + node.length)
   for (var i = 0; i < node.length; i++) {
     if (node[i].mac !== undefined) {
       // let rowCount = table.rows.length
