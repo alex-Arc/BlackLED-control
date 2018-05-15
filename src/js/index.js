@@ -11,6 +11,14 @@ let network = require('network')
 
 let $ = require('jquery')
 
+function resetClient (n) {
+  node[n].status = 'Updating'
+  drawTable()
+  let newName = 'BlackLED_p' + node[n].numOuts + '_' + node[n].ip.slice(2).replace('.', ':').replace('.', ':')
+  let newAddress = 0
+  controller.updateClient(node[n].ip, newName, [(newAddress), (newAddress) * 1 + 1, (newAddress) * 1 + 2, (newAddress) * 1 + 3], true)
+}
+
 network.get_interfaces_list(function (err, interfaceList) {
   if (err) {
     logger.error(err)
@@ -48,6 +56,7 @@ function updateTable () {
               default:
             }
           }
+          node[j].name = controller.nodes[i].name
           node[j].numOuts = numOuts
           node[j].uniUpdate = uUniPF
           node[j].Fps = fps
@@ -96,18 +105,24 @@ function drawTable () {
         row.insertCell(j++).innerHTML = '<span>' + node[i].status + '</span>'
       } else if (node[i].status === 'Offline') {
         row.insertCell(j++).innerHTML = '<span>' + node[i].status + '</span>'
+      } else {
+        row.insertCell(j++).innerHTML = '<span>' + node[i].status + '</span>'
       }
       row.insertCell(j++).innerHTML = node[i].name
       // row.insertCell(j++).innerHTML = node[i].mac
       let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-      row.insertCell(j++).innerHTML = addr
+      // row.insertCell(j++).innerHTML = addr
       // row.insertCell(j++).innerHTML = node[i].Fps
-      // row.insertCell(j++).innerHTML = node[i].uniUpdate
+      row.insertCell(j++).innerHTML = node[i].numOuts
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
-      row.insertCell(j++).innerHTML = '<button class="btn-default">RESET</button>'
+      let ipString = '"' + node[i].ip + '"'
+      let numOuStr = '"' + node[i].numOuts + '"'
+      // let n = i.toString()
+      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
     }
   }
 }
+
 window.onload = function () {
   updateTable()
   controller.refreshClients()
