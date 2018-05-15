@@ -108,5 +108,7 @@ function drawTable () {
     }
   }
 }
-updateTable()
-controller.refreshClients()
+window.onload = function () {
+  updateTable()
+  controller.refreshClients()
+}
