@@ -13,6 +13,11 @@ let mode = 'live'
 
 let $ = require('jquery')
 
+function clearTable () {
+  node = []
+  drawTable()
+}
+
 function setMode (newMode) {
   mode = newMode
   let liveBtn = document.getElementById('liveMode')
