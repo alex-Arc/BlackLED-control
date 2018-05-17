@@ -21,10 +21,11 @@ function setMode (newMode) {
     liveBtn.setAttribute('class', 'btn-primary')
     setupBtn.setAttribute('class', 'btn-default')
     updateTable()
-  } else {
+  } else if (mode === 'setup') {
     liveBtn.setAttribute('class', 'btn-default')
     setupBtn.setAttribute('class', 'btn-primary')
     updateTable()
+    clearTimeout(updateTable)
   }
 }
 
