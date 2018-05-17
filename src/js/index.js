@@ -9,7 +9,24 @@ const nodeList = remote.getGlobal('nodeList')
 let node = []
 let network = require('network')
 
+let mode = 'live'
+
 let $ = require('jquery')
+
+function setMode (newMode) {
+  mode = newMode
+  let liveBtn = document.getElementById('liveMode')
+  let setupBtn = document.getElementById('setupMode')
+  if (mode === 'live') {
+    liveBtn.setAttribute('class', 'btn-primary')
+    setupBtn.setAttribute('class', 'btn-default')
+    updateTable()
+  } else {
+    liveBtn.setAttribute('class', 'btn-default')
+    setupBtn.setAttribute('class', 'btn-primary')
+    updateTable()
+  }
+}
 
 function resetClient (n) {
   node[n].status = 'Updating'
@@ -88,7 +105,10 @@ function updateTable () {
   let jsonObj = JSON.stringify(node, null, '\t')
   logger.debug(jsonObj)
   fs.writeFileSync(nodeList, jsonObj)
-  setTimeout(updateTable, 4000)
+  if (mode === 'live') {
+    setTimeout(updateTable, 4000)
+  } else if (mode === 'setup') {
+  }
 }
 
 function drawTable () {
