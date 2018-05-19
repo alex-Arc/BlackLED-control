@@ -8,10 +8,27 @@ const nodeList = remote.getGlobal('nodeList')
 // let node = remote.getGlobal('node')
 let node = []
 let network = require('network')
+let $ = require('jquery')
 
 let mode = 'live'
 
-let $ = require('jquery')
+var pollTimeOut
+
+
+
+function pollTimeOutBar () {
+  var elem = document.getElementById('pollBar')
+  var width = 1
+  var id = setInterval(frame, 10)
+  function frame () {
+    if (width <= 0) {
+      clearInterval(id)
+    } else {
+      width = 100 - (((Date.now() - pollTimeOut) / 1000) / 4 * 100)
+      elem.style.width = width + '%'
+    }
+  }
+}
 
 function clearTable () {
   node = []
@@ -112,6 +129,7 @@ function updateTable () {
   logger.debug(jsonObj)
   fs.writeFileSync(nodeList, jsonObj)
   if (mode === 'live') {
+    pollTimeOut = Date.now()
     setTimeout(updateTable, 4000)
   } else if (mode === 'setup') {
   }
@@ -152,4 +170,5 @@ function drawTable () {
 window.onload = function () {
   updateTable()
   controller.refreshClients()
+  pollTimeOutBar()
 }

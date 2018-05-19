@@ -7,10 +7,12 @@
       <script src="../js/index.js"></script>
   </head>
   <body>
-    <button id="liveMode" class="btn-primary" onClick="setMode('live')">LIVE</button>
-    <button id="setupMode" class="btn-default" onClick="setMode('setup')">SETUP</button>
-    <button class="btn-primary" onClick="updateTable()">UPDATE</button>
-    <button class="btn-primary" onClick="clearTable()">CLEAR ALL</button>
+    <div>
+      <button id="liveMode" class="btn-primary" onClick="setMode('live')">LIVE</button>
+      <button id="setupMode" class="btn-default" onClick="setMode('setup')">SETUP</button>
+      <button class="btn-primary" onClick="updateTable()">UPDATE</button>
+      <button class="btn-primary" onClick="clearTable()">CLEAR ALL</button>
+    </div>
     <div class="node-div" id="test">
       <div id="node-list">
         <table class="table" id="node-table">
@@ -31,6 +33,10 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <p></p>
+    <div id="pollTimeOut">
+      <div id="pollBar"></div>
     </div>
   </body>
 </html>
