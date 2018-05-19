@@ -128,11 +128,11 @@ function drawTable () {
       let row = table.insertRow(-1)
       let j = 0
       if (node[i].status === 'Online') {
-        row.insertCell(j++).innerHTML = '<span>' + node[i].status + '</span>'
+        row.insertCell(j++).innerHTML = '<div class="statusCircle-online"></div>'
       } else if (node[i].status === 'Offline') {
-        row.insertCell(j++).innerHTML = '<span>' + node[i].status + '</span>'
+        row.insertCell(j++).innerHTML = '<div class="statusCircle-offline"></div>'
       } else {
-        row.insertCell(j++).innerHTML = '<span>' + node[i].status + '</span>'
+        row.insertCell(j++).innerHTML = '<div class="statusCircle-updating"></div>'
       }
       row.insertCell(j++).innerHTML = node[i].name
       // row.insertCell(j++).innerHTML = node[i].mac
