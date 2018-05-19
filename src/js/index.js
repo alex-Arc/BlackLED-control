@@ -131,6 +131,7 @@ function updateTable () {
   if (mode === 'live') {
     pollTimeOut = Date.now()
     setTimeout(updateTable, 4000)
+    pollTimeOutBar()
   } else if (mode === 'setup') {
   }
 }
@@ -168,7 +169,6 @@ function drawTable () {
 }
 
 window.onload = function () {
-  updateTable()
   controller.refreshClients()
-  pollTimeOutBar()
+  updateTable()
 }
