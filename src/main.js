@@ -32,6 +32,9 @@ function startUp () {
 
 function createWindow () {
   mainWindow = new BrowserWindow({width: 900, height: 950})
+  mainWindow.eval = global.eval = function () {
+    throw new Error(`Sorry, this app does not support window.eval().`)
+  }
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, '/html/index.html'), protocol: 'file:', slashes: true
   }))
