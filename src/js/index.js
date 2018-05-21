@@ -137,8 +137,8 @@ function updateTable () {
 }
 
 function drawTable () {
-  // let fpsDisp = document.getElementById('Fps-disp')
-  // fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
+  let fpsDisp = document.getElementById('fpsDisp')
+  fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
   for (var i = 0; i < node.length; i++) {
