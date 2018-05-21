@@ -160,6 +160,7 @@ function drawTable () {
       // row.insertCell(j++).innerHTML = node[i].Fps
       row.insertCell(j++).innerHTML = node[i].numOuts
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
+      row.insertCell(j++).innerHTML = node[i].version
       let ipString = '"' + node[i].ip + '"'
       let numOuStr = '"' + node[i].numOuts + '"'
       // let n = i.toString()
