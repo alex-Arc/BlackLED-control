@@ -3,7 +3,7 @@ const remote = require('electron').remote
 const url = require('url')
 const path = require('path')
 
-require('electron-reload')(__dirname)
+// require('electron-reload')(__dirname)
 
 let mainWindow
 

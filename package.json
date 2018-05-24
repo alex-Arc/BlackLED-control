@@ -10,7 +10,8 @@
   "scripts": {
     "start": "electron ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-packager . --overwrite",
+    "package-mac": "electron-packager . --platform=darwin --overwrite",
+    "package-win": "electron-packager . --platform=darwin --overwrite",
     "build": ""
   },
   "dependencies": {

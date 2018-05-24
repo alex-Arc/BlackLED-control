@@ -28,3 +28,5 @@ hs_err_pid*
 nodeList\.json
 
 blackled-control-win32-x64/
+
+blackled-control-darwin-x64/
