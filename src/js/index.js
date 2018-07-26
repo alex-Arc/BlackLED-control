@@ -93,6 +93,9 @@ function updateTable () {
               case 'uUniPF':
                 var uUniPF = report[r + 1]
                 break
+              case 'build':
+                var build = report[r + 1]
+                break
               default:
             }
           }
@@ -102,6 +105,7 @@ function updateTable () {
           node[j].Fps = fps
           node[j].temperature = temp
           node[j].status = 'Online'
+          node[j].build = build
         }
       }
     }
@@ -161,6 +165,7 @@ function drawTable () {
       row.insertCell(j++).innerHTML = node[i].numOuts
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       row.insertCell(j++).innerHTML = node[i].version
+      row.insertCell(j++).innerHTML = node[i].build
       let ipString = '"' + node[i].ip + '"'
       let numOuStr = '"' + node[i].numOuts + '"'
       // let n = i.toString()
