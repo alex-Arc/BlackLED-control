@@ -16,17 +16,17 @@
   },
   "dependencies": {
     "artnet": "git+https://github.com/alex-Arc/node-artnet.git#semver:0.2.3",
-    "electron-settings": "^3.1.1",
+    "electron-settings": "^3.2.0",
     "jquery": "^3.3.1",
     "network": "^0.4.1",
-    "winston": "^2.4.2"
+    "winston": "^2.4.3"
   },
   "author": "Alex Christoffer Rasmussen",
   "license": "MIT",
   "devDependencies": {
-    "electron-reload": "^1.2.2",
-    "electron": "^2.0.0",
+    "electron": "^2.0.5",
     "electron-packager": "^9.1.0",
+    "electron-reload": "^1.2.5",
     "semver": "^5.5.0"
   }
 }
