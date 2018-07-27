@@ -163,6 +163,7 @@ function drawTable () {
       // row.insertCell(j++).innerHTML = addr
       // row.insertCell(j++).innerHTML = node[i].Fps
       row.insertCell(j++).innerHTML = node[i].numOuts
+      row.insertCell(j++).innerHTML = node[i].uniUpdate
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       row.insertCell(j++).innerHTML = node[i].version
       row.insertCell(j++).innerHTML = node[i].build
