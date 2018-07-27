@@ -56,7 +56,19 @@ function resetClient (n) {
   drawTable()
   let newName = 'BlackLED_p' + node[n].numOuts + '_' + node[n].ip.slice(2).replace('.', ':').replace('.', ':')
   let newAddress = 0
-  controller.updateClient(node[n].ip, newName, [(newAddress), (newAddress) * 1 + 1, (newAddress) * 1 + 2, (newAddress) * 1 + 3], true)
+  controller.updateClient(node[n].ip, newName, [(newAddress), (newAddress) * 1 + 1, (newAddress) * 1 + 2, (newAddress) * 1 + 3], node[n].locate)
+}
+
+function locateClient (n) {
+  if (node[n].locate === false) {
+    node[n].locate = true
+    controller.updateClient(node[n].ip, node[n].name, undefined, true)
+    drawTable()
+  } else {
+    node[n].locate = false
+    controller.updateClient(node[n].ip, node[n].name, undefined, false)
+    drawTable()
+  }
 }
 
 network.get_interfaces_list(function (err, interfaceList) {
@@ -110,7 +122,7 @@ function updateTable () {
       }
     }
     if (newNode === true) {
-      let obj = {mac: controller.nodes[i].mac, ip: controller.nodes[i].ip, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput}
+      let obj = {mac: controller.nodes[i].mac, ip: controller.nodes[i].ip, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput, locate: false}
       node.push(obj)
     }
   }
@@ -171,6 +183,11 @@ function drawTable () {
       let numOuStr = '"' + node[i].numOuts + '"'
       // let n = i.toString()
       row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
+      if (node[i].locate === false) {
+        row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+      } else {
+        row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+      }
     }
   }
 }
