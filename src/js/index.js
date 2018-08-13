@@ -178,15 +178,20 @@ function drawTable () {
       row.insertCell(j++).innerHTML = node[i].uniUpdate
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       row.insertCell(j++).innerHTML = node[i].version
-      row.insertCell(j++).innerHTML = node[i].build
+      row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
       let ipString = '"' + node[i].ip + '"'
       let numOuStr = '"' + node[i].numOuts + '"'
       // let n = i.toString()
-      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
-      if (node[i].locate === false) {
-        row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
-      } else {
-        row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+      if (node[i].version >= 1.0) {
+        row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
+        if (node[i].locate === false) {
+          row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+        } else {
+          row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+        }
+      }
+      else {
+        row.insertCell(j++).innerHTML = 'NA'
       }
     }
   }
