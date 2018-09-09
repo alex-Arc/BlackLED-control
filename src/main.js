@@ -10,8 +10,6 @@ let mainWindow
 // console.log('test 1 2 3!')
 // console.log(process.env.NODE_ENV)
 
-const fs = require('fs')
-let nodeList = path.join(app.getPath('userData'), 'nodeList.json')
 let logFolder = path.join(app.getPath('userData'), 'logs')
 let logFile = path.join(logFolder, new Date().toISOString().replace(/:/g, '.') + '.log')
 
@@ -19,13 +17,10 @@ const logger = require('winston')
 logger.clear()
 // if (process.env.NODE_ENV !== 'production') {
 logger.add(logger.transports.Console, {colorize: true, level: 'error'}) //  }
-let node = []
-global.fs = fs
-global.nodeList = nodeList
+
 global.logger = logger
 
 function startUp () {
-  loadFiles()
   logger.add(logger.transports.File, { filename: logFile, level: 'info', logstash: true })
   createWindow()
   // require('./menu/mainmenu')
@@ -65,37 +60,3 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
-function loadFiles () {
-  fs.open(nodeList, 'r+', (err, fd) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        logger.verbose('no node file')
-        return
-      }
-      logger.error('open1 error: ' + err.code)
-      throw err
-    } else {
-      fs.readFile(nodeList, 'utf8', (err, data) => {
-        if (err) throw err
-        logger.verbose('reading from node file')
-        logger.debug(data)
-        node = JSON.parse(data)
-      })
-    }
-  })
-  global.node = node
-  fs.open(logFolder, 'r', (err, fd) => {
-    if (err) {
-      if (err.code === 'EEXIST') {
-        return
-      }
-      fs.mkdir(logFolder, (err) => {
-        if (err) {
-          logger.error('mkdir error')
-          throw err
-        }
-      })
-    }
-  })
-}

@@ -3,8 +3,6 @@ let controller = ArtNet.createController()
 
 const remote = require('electron').remote
 const logger = remote.getGlobal('logger')
-const fs = remote.getGlobal('fs')
-const nodeList = remote.getGlobal('nodeList')
 // let node = remote.getGlobal('node')
 let node = []
 let network = require('network')
@@ -13,8 +11,6 @@ let $ = require('jquery')
 let mode = 'live'
 
 var pollTimeOut
-
-
 
 function pollTimeOutBar () {
   var elem = document.getElementById('pollBar')
@@ -143,7 +139,6 @@ function updateTable () {
   drawTable()
   let jsonObj = JSON.stringify(node, null, '\t')
   logger.debug(jsonObj)
-  fs.writeFileSync(nodeList, jsonObj)
   if (mode === 'live') {
     pollTimeOut = Date.now()
     setTimeout(updateTable, 4000)
