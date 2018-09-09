@@ -1,7 +1,7 @@
 {
   "name": "blackled-control",
   "version": "0.2.0",
-  "description": "control interface for Vertgo's BlackLED driver",
+  "description": "control interface for Vertgo's BlackLED LED driver",
   "repository": {
     "type": "git",
     "url": "https://github.com/alex-Arc/BlackLED-control.git"
@@ -11,8 +11,11 @@
     "start": "electron ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package-mac": "electron-packager . --platform=darwin --overwrite",
-    "package-win": "electron-packager . BlackLED-Control --platform=win32 --overwrite",
-    "build": ""
+    "package-win": "electron-packager . BlackLED-Control --platform=win32 --overwrite"
+  },
+  "build": {
+    "appId": "com.black.led.bl",
+    "productName": "blackled-control"
   },
   "dependencies": {
     "artnet": "git+https://github.com/alex-Arc/node-artnet.git#semver:0.2.3",
