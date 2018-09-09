@@ -32,7 +32,7 @@ function createWindow () {
     throw new Error(`Sorry, this app does not support window.eval().`)
   }
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '/html/index.html'), protocol: 'file:', slashes: true
+    pathname: path.join(__dirname, '/index/index.html'), protocol: 'file:', slashes: true
   }))
   mainWindow.on('closed', function () {
     logger.verbose('window closed')
