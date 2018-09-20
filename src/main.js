@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 const url = require('url')
 const path = require('path')
 
@@ -25,6 +25,11 @@ if (env === 'dev') {
 logger.verbose(env)
 
 global.logger = logger
+let node = []
+global.globalNode = node
+
+let editClientWindow
+let currentClientToEdit = 0
 
 app.on('ready', function () {
   logger.add(logger.transports.File, { filename: logFile, level: 'info', logstash: true })
@@ -38,6 +43,7 @@ app.on('ready', function () {
   mainWindow.on('closed', function () {
     logger.verbose('window closed')
     mainWindow = null
+    editClientWindow = null
   })
 })
 
@@ -52,4 +58,25 @@ app.on('window-all-closed', function () {
 
 app.on('before-quit', function () {
   logger.verbose('before-quit')
+})
+
+ipcMain.on('editClient', function (event, n) {
+  logger.warn('Edit Client from ' + n)
+  currentClientToEdit = n
+  if (editClientWindow !== undefined && editClientWindow !== null) {
+  } else {
+    editClientWindow = new BrowserWindow({width: 400, height: 400, show: false, modal: true})
+    editClientWindow.loadURL('file://' + __dirname + '/editClient/editClient.html')
+    logger.verbose('editClientWindow loaded')
+    editClientWindow.on('closed', function () {
+      logger.verbose('editClientWindow closed')
+      editClientWindow = null
+    })
+    editClientWindow.show()
+  }
+})
+
+ipcMain.on('getClientToEdit', function (event) {
+  logger.warn('getClientToEdit')
+  event.returnValue = currentClientToEdit
 })

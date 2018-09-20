@@ -1,10 +1,10 @@
 let ArtNet = require('artnet')
 let controller = ArtNet.createController()
 
-const remote = require('electron').remote
+const {remote, ipcRenderer} = require('electron')
 const logger = remote.getGlobal('logger')
-// let node = remote.getGlobal('node')
-let node = []
+let node = remote.getGlobal('globalNode')
+// let node = []
 let network = require('network')
 let $ = require('jquery')
 
@@ -46,6 +46,17 @@ function setMode (newMode) {
     clearTimeout(updateTable)
   }
 }
+
+function editClient (n) {
+  console.log('editClient')
+  node[n].status = 'Updating'
+  ipcRenderer.send('editClient', n)
+}
+
+ipcRenderer.on('getClientName', function (event, n) {
+  logger.warn('getClientName')
+  event.returnValue = node[n].name
+})
 
 function resetClient (n) {
   node[n].status = 'Updating'
@@ -167,10 +178,11 @@ function drawTable () {
       row.insertCell(j++).innerHTML = node[i].name
       // row.insertCell(j++).innerHTML = node[i].mac
       let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-      // row.insertCell(j++).innerHTML = addr
+      row.insertCell(j++).innerHTML = addr
       // row.insertCell(j++).innerHTML = node[i].Fps
       row.insertCell(j++).innerHTML = node[i].numOuts
       row.insertCell(j++).innerHTML = node[i].uniUpdate
+      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       row.insertCell(j++).innerHTML = node[i].version
       row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
@@ -184,8 +196,7 @@ function drawTable () {
         } else {
           row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
         }
-      }
-      else {
+      } else {
         row.insertCell(j++).innerHTML = 'NA'
       }
     }
