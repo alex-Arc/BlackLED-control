@@ -47,16 +47,17 @@ function setMode (newMode) {
   }
 }
 
+ipcRenderer.on('getClientInfo', function (event, n) {
+  console.log('send client info')
+  console.log(node[n])
+  ipcRenderer.send('getClientInfo', node[n])
+})
+
 function editClient (n) {
   console.log('editClient')
   node[n].status = 'Updating'
   ipcRenderer.send('editClient', n)
 }
-
-ipcRenderer.on('getClientName', function (event, n) {
-  logger.warn('getClientName')
-  event.returnValue = node[n].name
-})
 
 function resetClient (n) {
   node[n].status = 'Updating'

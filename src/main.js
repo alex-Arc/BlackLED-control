@@ -17,7 +17,7 @@ const logger = require('winston')
 logger.clear()
 
 if (env === 'dev') {
-  logger.add(logger.transports.Console, {colorize: true, level: 'verbose'})
+  logger.add(logger.transports.Console, {colorize: true, level: 'warn'})
 } else {
   logger.add(logger.transports.Console, {colorize: true, level: 'error'})
 }
@@ -29,7 +29,7 @@ let node = []
 global.globalNode = node
 
 let editClientWindow
-let currentClientToEdit = 0
+let currentClientToEdit = 1
 
 app.on('ready', function () {
   logger.add(logger.transports.File, { filename: logFile, level: 'info', logstash: true })
@@ -43,7 +43,7 @@ app.on('ready', function () {
   mainWindow.on('closed', function () {
     logger.verbose('window closed')
     mainWindow = null
-    editClientWindow = null
+    // TODO: close edit window in some way
   })
 })
 
@@ -60,6 +60,15 @@ app.on('before-quit', function () {
   logger.verbose('before-quit')
 })
 
+ipcMain.on('getClientToEdit', function (event) {
+  logger.warn('getClientToEdit')
+  mainWindow.webContents.send('getClientInfo', currentClientToEdit)
+  ipcMain.once('getClientInfo', function (evn, node) {
+    logger.warn(node)
+    editClientWindow.webContents.send('getClientToEdit', node)
+  })
+})
+
 ipcMain.on('editClient', function (event, n) {
   logger.warn('Edit Client from ' + n)
   currentClientToEdit = n
@@ -74,9 +83,4 @@ ipcMain.on('editClient', function (event, n) {
     })
     editClientWindow.show()
   }
-})
-
-ipcMain.on('getClientToEdit', function (event) {
-  logger.warn('getClientToEdit')
-  event.returnValue = currentClientToEdit
 })
