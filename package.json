@@ -10,7 +10,7 @@
   "scripts": {
     "start": "electron ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package-mac": "electron-packager . --platform=darwin --overwrite",
+    "package-mac": "electron-packager . BlackLED-Control --platform=darwin --overwrite",
     "package-win": "electron-packager . BlackLED-Control --platform=win32 --overwrite"
   },
   "build": {
