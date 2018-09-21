@@ -9,7 +9,7 @@ let network = require('network')
 let $ = require('jquery')
 
 let mode = 'live'
-
+let fieldMode = 'readonly'
 var pollTimeOut
 
 function pollTimeOutBar () {
@@ -38,11 +38,13 @@ function setMode (newMode) {
   if (mode === 'live') {
     liveBtn.setAttribute('class', 'btn-primary')
     setupBtn.setAttribute('class', 'btn-default')
+    fieldMode = 'readonly'
     updateTable()
   } else if (mode === 'setup') {
     liveBtn.setAttribute('class', 'btn-default')
     setupBtn.setAttribute('class', 'btn-primary')
     updateTable()
+    fieldMode = ''
     clearTimeout(updateTable)
   }
 }
@@ -77,6 +79,16 @@ function locateClient (n) {
     controller.updateClient(node[n].ip, node[n].name, undefined, false)
     drawTable()
   }
+}
+
+function applyNameAddr (n) {
+  node[n].status = 'Updating'
+  let newName = document.getElementById('name_' + n).value
+  console.log(newName)
+  let newAddress = document.getElementById('addr_' + n).value
+  console.log(newAddress)
+  controller.updateClient(node[n].ip, newName, [(newAddress), (newAddress) * 1 + 1, (newAddress) * 1 + 2, (newAddress) * 1 + 3], node[n].locate)
+  drawTable()
 }
 
 network.get_interfaces_list(function (err, interfaceList) {
@@ -126,6 +138,9 @@ function updateTable () {
           node[j].temperature = temp
           node[j].status = 'Online'
           node[j].build = build
+          node[j].net = controller.nodes[i].net
+          node[j].subnet = controller.nodes[i].subnet
+          node[j].univers = controller.nodes[i].universesOutput
         }
       }
     }
@@ -164,6 +179,9 @@ function drawTable () {
   fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
+
+
+
   for (var i = 0; i < node.length; i++) {
     if (node[i].mac !== undefined) {
       // let rowCount = table.rows.length
@@ -176,30 +194,31 @@ function drawTable () {
       } else {
         row.insertCell(j++).innerHTML = '<div class="statusCircle updating"></div>'
       }
-      row.insertCell(j++).innerHTML = node[i].name
+      row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" value="' + node[i].name + '" ' + fieldMode + '>'
       // row.insertCell(j++).innerHTML = node[i].mac
       let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-      row.insertCell(j++).innerHTML = addr
+      row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
       // row.insertCell(j++).innerHTML = node[i].Fps
       row.insertCell(j++).innerHTML = node[i].numOuts
       row.insertCell(j++).innerHTML = node[i].uniUpdate
       row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
-      row.insertCell(j++).innerHTML = node[i].version
-      row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
+      // row.insertCell(j++).innerHTML = node[i].version
+      // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
       let ipString = '"' + node[i].ip + '"'
       let numOuStr = '"' + node[i].numOuts + '"'
       // let n = i.toString()
-      if (node[i].version >= 1.0) {
-        row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
-        if (node[i].locate === false) {
-          row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
-        } else {
-          row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
-        }
-      } else {
-        row.insertCell(j++).innerHTML = 'NA'
-      }
+      // if (node[i].version >= 1.0) {
+      //   row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
+      //   if (node[i].locate === false) {
+      //     row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+      //   } else {
+      //     row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+      //   }
+      // } else {
+      //   row.insertCell(j++).innerHTML = 'NA'
+      // }
+      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
     }
   }
 }
