@@ -207,9 +207,6 @@ function drawTable () {
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       // row.insertCell(j++).innerHTML = node[i].version
       // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
-      let ipString = '"' + node[i].ip + '"'
-      let numOuStr = '"' + node[i].numOuts + '"'
-      // let n = i.toString()
       if (node[i].version >= 0.10) {
         // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
         if (node[i].locate === false) {
@@ -222,7 +219,7 @@ function drawTable () {
       }
       if (mode === 'setup') {
         row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
-      }else if (mode === 'live') {
+      } else if (mode === 'live') {
         row.insertCell(j++).innerHTML = ''
       }
     }
