@@ -200,6 +200,8 @@ function drawTable () {
       row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
       if (node[i].numOuts !== undefined) {
         row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3)
+      } else {
+        row.insertCell(j++).innerHTML = ''
       }
       row.insertCell(j++).innerHTML = node[i].numOuts
       row.insertCell(j++).innerHTML = node[i].uniUpdate
@@ -221,7 +223,11 @@ function drawTable () {
       // } else {
       //   row.insertCell(j++).innerHTML = 'NA'
       // }
-      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
+      if (mode === 'setup') {
+        row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
+      }else if (mode === 'live') {
+        row.insertCell(j++).innerHTML = ''
+      }
     }
   }
 }
