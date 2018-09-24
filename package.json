@@ -21,14 +21,14 @@
     "artnet": "git+https://github.com/alex-Arc/node-artnet.git#semver:0.2.3",
     "jquery": "^3.3.1",
     "network": "^0.4.1",
-    "winston": "^2.4.3"
+    "winston": "^2.4.4"
   },
   "author": "Alex Christoffer Rasmussen",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^2.0.7",
+    "electron": "^2.0.10",
     "electron-packager": "^9.1.0",
     "electron-reload": "^1.2.5",
-    "semver": "^5.5.0"
+    "semver": "^5.5.1"
   }
 }
