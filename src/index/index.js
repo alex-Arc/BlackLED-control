@@ -179,9 +179,6 @@ function drawTable () {
   fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
   var table = document.getElementById('node-table-content')
   table.innerHTML = ''
-
-
-
   for (var i = 0; i < node.length; i++) {
     if (node[i].mac !== undefined) {
       // let rowCount = table.rows.length
@@ -213,16 +210,16 @@ function drawTable () {
       let ipString = '"' + node[i].ip + '"'
       let numOuStr = '"' + node[i].numOuts + '"'
       // let n = i.toString()
-      // if (node[i].version >= 1.0) {
-      //   row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
-      //   if (node[i].locate === false) {
-      //     row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
-      //   } else {
-      //     row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
-      //   }
-      // } else {
-      //   row.insertCell(j++).innerHTML = 'NA'
-      // }
+      if (node[i].version >= 0.10) {
+        // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
+        if (node[i].locate === false) {
+          row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+        } else {
+          row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+        }
+      } else {
+        row.insertCell(j++).innerHTML = ''
+      }
       if (mode === 'setup') {
         row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
       }else if (mode === 'live') {
