@@ -198,10 +198,13 @@ function drawTable () {
       // row.insertCell(j++).innerHTML = node[i].mac
       let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
       row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
-      // row.insertCell(j++).innerHTML = node[i].Fps
+      if (node[i].numOuts !== undefined) {
+        row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3)
+      }
       row.insertCell(j++).innerHTML = node[i].numOuts
       row.insertCell(j++).innerHTML = node[i].uniUpdate
-      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
+      // row.insertCell(j++).innerHTML = node[i].Fps
+      // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       // row.insertCell(j++).innerHTML = node[i].version
       // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
