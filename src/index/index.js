@@ -203,7 +203,7 @@ function drawTable () {
       }
       row.insertCell(j++).innerHTML = node[i].numOuts
       row.insertCell(j++).innerHTML = node[i].uniUpdate
-      // row.insertCell(j++).innerHTML = node[i].Fps
+      row.insertCell(j++).innerHTML = node[i].Fps
       // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
       // row.insertCell(j++).innerHTML = node[i].version
