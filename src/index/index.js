@@ -55,6 +55,10 @@ ipcRenderer.on('getClientInfo', function (event, n) {
   ipcRenderer.send('getClientInfo', node[n])
 })
 
+function setStatusUpdating (n) {
+  node[n].status
+}
+
 function editClient (n) {
   console.log('editClient')
   node[n].status = 'Updating'
@@ -212,49 +216,49 @@ function updateTable () {
 
 function drawRow (i) {
   let row = document.getElementById(i)
-  row.innerHTML = ''
+  // row.innerHTML = ''
   let j = 0
   if (node[i].status === 'Online') {
-    row.insertCell(j++).innerHTML = '<div class="statusCircle online"></div>'
+    row.cells[j++].innerHTML = '<div class="statusCircle online"></div>'
   } else if (node[i].status === 'Offline') {
-    row.insertCell(j++).innerHTML = '<div class="statusCircle offline"></div>'
+    row.cells[j++].innerHTML = '<div class="statusCircle offline"></div>'
   } else if (node[i].status === 'Updating') {
-    row.insertCell(j++).innerHTML = '<div class="statusCircle updating"></div>'
+    row.cells[j++].innerHTML = '<div class="statusCircle updating"></div>'
   } else if (node[i].status === 'updating-collision') {
-    row.insertCell(j++).innerHTML = '<div class="statusCircle updating-collision"></div>'
+    row.cells[j++].innerHTML = '<div class="statusCircle updating-collision"></div>'
   } else if (node[i].status === 'online-collision') {
-    row.insertCell(j++).innerHTML = '<div class="statusCircle online-collision"></div>'
+    row.cells[j++].innerHTML = '<div class="statusCircle online-collision"></div>'
   }
-  row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" value="' + node[i].name + '" ' + fieldMode + '>'
-  // row.insertCell(j++).innerHTML = node[i].mac
+  row.cells[j++].innerHTML = '<input type="text" id="name_' + i + '" onchange="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
+  // row.cells[j++].innerHTML = node[i].mac
   let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-  row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
+  row.cells[j++].innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
   if (node[i].numOuts !== undefined) {
-    row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3)
+    row.cells[j++].innerHTML = addr + (node[i].numOuts * 3)
   } else {
-    row.insertCell(j++).innerHTML = ''
+    row.cells[j++].innerHTML = ''
   }
-  row.insertCell(j++).innerHTML = node[i].numOuts
-  row.insertCell(j++).innerHTML = node[i].uniUpdate
-  row.insertCell(j++).innerHTML = node[i].Fps
-  // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
-  // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
-  // row.insertCell(j++).innerHTML = node[i].version
-  // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
+  row.cells[j++].innerHTML = node[i].numOuts
+  row.cells[j++].innerHTML = node[i].uniUpdate
+  row.cells[j++].innerHTML = node[i].Fps
+  // row.cells[j++].innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
+  // row.cells[j++].innerHTML = node[i].temperature + ' C°'
+  // row.cells[j++].innerHTML = node[i].version
+  // row.cells[j++].innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
   if (node[i].version >= 0.10) {
-    // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
+    // row.cells[j++].innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
     if (node[i].locate === false) {
-      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+      row.cells[j++].innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
     } else {
-      row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+      row.cells[j++].innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
     }
   } else {
-    row.insertCell(j++).innerHTML = ''
+    row.cells[j++].innerHTML = ''
   }
   if (mode === 'setup') {
-    row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
+    row.cells[j++].innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
   } else if (mode === 'live') {
-    row.insertCell(j++).innerHTML = ''
+    row.cells[j++].innerHTML = ''
   }
 }
 
