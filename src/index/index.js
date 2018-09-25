@@ -81,14 +81,50 @@ function locateClient (n) {
   }
 }
 
+function getStartAddr (n) {
+  let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
+  return addr
+}
+
+function getEndAddr (n) {
+  let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
+  addr += (node[n].numOuts * 3)
+  return addr
+}
+
+function addrToNet (n) {
+  return n >> 8
+}
+
+function addrToSubnet (n) {
+  return (n & 0xF0) >> 4
+}
+
+function addrToUni (n) {
+  return n & 0x0F
+}
+
 function applyNameAddr (n) {
-  node[n].status = 'Updating'
   let newName = document.getElementById('name_' + n).value
-  console.log(newName)
   let newAddress = document.getElementById('addr_' + n).value
-  console.log(newAddress)
   controller.updateClient(node[n].ip, newName, [(newAddress), (newAddress) * 1 + 1, (newAddress) * 1 + 2, (newAddress) * 1 + 3], node[n].locate)
-  drawTable()
+  node[n].name = newName
+  node[n].net = addrToNet(newAddress)
+  node[n].subnet = addrToSubnet(newAddress)
+  node[n].univers[0] = addrToUni(newAddress)
+  node[n].status = 'Updating'
+  for (let i = 0; i < node.length; i++) {
+    if (node[n].mac === node[i].mac) {
+      // it's me
+    } else {
+      if (getStartAddr(n) >= getStartAddr(i) && getStartAddr(n) <= getEndAddr(i)) {
+        node[n].status = 'updating-collision'
+      } else if (getEndAddr(n) >= getStartAddr(i) && getEndAddr(n) <= getEndAddr(i)) {
+        node[n].status = 'updating-collision'
+      }
+    }
+  }
+  drawRow(n)
 }
 
 network.get_interfaces_list(function (err, interfaceList) {
@@ -174,6 +210,54 @@ function updateTable () {
   }
 }
 
+function drawRow (i) {
+  let row = document.getElementById(i)
+  row.innerHTML = ''
+  let j = 0
+  if (node[i].status === 'Online') {
+    row.insertCell(j++).innerHTML = '<div class="statusCircle online"></div>'
+  } else if (node[i].status === 'Offline') {
+    row.insertCell(j++).innerHTML = '<div class="statusCircle offline"></div>'
+  } else if (node[i].status === 'Updating') {
+    row.insertCell(j++).innerHTML = '<div class="statusCircle updating"></div>'
+  } else if (node[i].status === 'updating-collision') {
+    row.insertCell(j++).innerHTML = '<div class="statusCircle updating-collision"></div>'
+  } else if (node[i].status === 'online-collision') {
+    row.insertCell(j++).innerHTML = '<div class="statusCircle online-collision"></div>'
+  }
+  row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" value="' + node[i].name + '" ' + fieldMode + '>'
+  // row.insertCell(j++).innerHTML = node[i].mac
+  let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
+  row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
+  if (node[i].numOuts !== undefined) {
+    row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3)
+  } else {
+    row.insertCell(j++).innerHTML = ''
+  }
+  row.insertCell(j++).innerHTML = node[i].numOuts
+  row.insertCell(j++).innerHTML = node[i].uniUpdate
+  row.insertCell(j++).innerHTML = node[i].Fps
+  // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
+  // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
+  // row.insertCell(j++).innerHTML = node[i].version
+  // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
+  if (node[i].version >= 0.10) {
+    // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
+    if (node[i].locate === false) {
+      row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+    } else {
+      row.insertCell(j++).innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+    }
+  } else {
+    row.insertCell(j++).innerHTML = ''
+  }
+  if (mode === 'setup') {
+    row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
+  } else if (mode === 'live') {
+    row.insertCell(j++).innerHTML = ''
+  }
+}
+
 function drawTable () {
   let fpsDisp = document.getElementById('fpsDisp')
   fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
@@ -183,6 +267,7 @@ function drawTable () {
     if (node[i].mac !== undefined) {
       // let rowCount = table.rows.length
       let row = table.insertRow(-1)
+      row.setAttribute('id', i)
       let j = 0
       if (node[i].status === 'Online') {
         row.insertCell(j++).innerHTML = '<div class="statusCircle online"></div>'
