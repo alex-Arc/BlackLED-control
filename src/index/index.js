@@ -55,10 +55,6 @@ ipcRenderer.on('getClientInfo', function (event, n) {
   ipcRenderer.send('getClientInfo', node[n])
 })
 
-function setStatusUpdating (n) {
-  node[n].status
-}
-
 function editClient (n) {
   console.log('editClient')
   node[n].status = 'Updating'
@@ -131,6 +127,26 @@ function applyNameAddr (n) {
   drawRow(n)
 }
 
+function setStatusUpdating (n) {
+  console.log('change')
+  if (node[n].status === 'Updating' || node[n].status === 'updating-collision') {
+  } else {
+    node[n].status = 'Updating'
+    for (let i = 0; i < node.length; i++) {
+      if (node[n].mac === node[i].mac) {
+        // it's me
+      } else {
+        if (getStartAddr(n) >= getStartAddr(i) && getStartAddr(n) <= getEndAddr(i)) {
+          node[n].status = 'updating-collision'
+        } else if (getEndAddr(n) >= getStartAddr(i) && getEndAddr(n) <= getEndAddr(i)) {
+          node[n].status = 'updating-collision'
+        }
+      }
+    }
+    drawRow(n)
+  }
+}
+
 network.get_interfaces_list(function (err, interfaceList) {
   if (err) {
     logger.error(err)
@@ -141,7 +157,10 @@ network.get_interfaces_list(function (err, interfaceList) {
 
 function updateTable () {
   for (let i = 0; i < node.length; i++) {
-    node[i].status = 'Offline'
+    if (node[i].status === 'Updating' || node[i].status === 'updating-collision') {
+    } else {
+      node[i].status = 'Offline'
+    }
   }
   for (let i = 0; i < controller.nodes.length; i++) {
     logger.verbose(controller.nodes[i])
@@ -171,16 +190,22 @@ function updateTable () {
               default:
             }
           }
-          node[j].name = controller.nodes[i].name
-          node[j].numOuts = numOuts
           node[j].uniUpdate = uUniPF
           node[j].Fps = fps
           node[j].temperature = temp
-          node[j].status = 'Online'
           node[j].build = build
-          node[j].net = controller.nodes[i].net
-          node[j].subnet = controller.nodes[i].subnet
-          node[j].univers = controller.nodes[i].universesOutput
+          if (node[i].status === 'Updating' || node[i].status === 'updating-collision') {
+            if (node[j].net === controller.nodes[i].net && node[j].subnet === controller.nodes[i].subnet && node[j].univers === controller.nodes[i].universesOutput) {
+
+            }
+          } else {
+            node[j].status = 'Online'
+            node[j].name = controller.nodes[i].name
+            node[j].numOuts = numOuts
+            node[j].net = controller.nodes[i].net
+            node[j].subnet = controller.nodes[i].subnet
+            node[j].univers = controller.nodes[i].universesOutput
+          }
         }
       }
     }
@@ -229,7 +254,7 @@ function drawRow (i) {
   } else if (node[i].status === 'online-collision') {
     row.cells[j++].innerHTML = '<div class="statusCircle online-collision"></div>'
   }
-  row.cells[j++].innerHTML = '<input type="text" id="name_' + i + '" onchange="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
+  row.cells[j++].innerHTML = '<input type="text" id="name_' + i + '" oninput="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
   // row.cells[j++].innerHTML = node[i].mac
   let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
   row.cells[j++].innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
@@ -280,7 +305,7 @@ function drawTable () {
       } else {
         row.insertCell(j++).innerHTML = '<div class="statusCircle updating"></div>'
       }
-      row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" value="' + node[i].name + '" ' + fieldMode + '>'
+      row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" oninput="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
       // row.insertCell(j++).innerHTML = node[i].mac
       let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
       row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
