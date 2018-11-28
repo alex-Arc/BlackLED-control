@@ -149,23 +149,45 @@ function applyNameAddr (n) {
   drawRow(n)
 }
 
-function setStatusUpdating (n) {
-  console.log('change')
-  if (node[n].status === 'Updating' || node[n].status === 'updating-collision') {
-  } else {
-    node[n].status = 'Updating'
-    for (let i = 0; i < node.length; i++) {
-      if (node[n].mac === node[i].mac) {
-        // it's me
-      } else {
-        if (getStartAddr(n) >= getStartAddr(i) && getStartAddr(n) <= getEndAddr(i)) {
-          node[n].status = 'updating-collision'
-        } else if (getEndAddr(n) >= getStartAddr(i) && getEndAddr(n) <= getEndAddr(i)) {
-          node[n].status = 'updating-collision'
-        }
+function setStatusOnline (n) {
+  console.log('change online')
+  node[n].status = 'Online'
+  for (let i = 0; i < node.length; i++) {
+    if (node[n].mac === node[i].mac) {
+      // it's me
+    } else {
+      if (getStartAddr(n) >= getStartAddr(i) && getStartAddr(n) <= getEndAddr(i)) {
+        node[n].status = 'online-collision'
+      } else if (getEndAddr(n) >= getStartAddr(i) && getEndAddr(n) <= getEndAddr(i)) {
+        node[n].status = 'online-collision'
       }
     }
-    drawRow(n)
+  }
+  drawRow(n)
+}
+
+function setStatusUpdating (n) {
+  let col = []
+  console.log('change updating')
+  node[n].status = 'Updating'
+  for (let i = 0; i < node.length; i++) {
+    if (node[n].mac === node[i].mac) {
+      // it's me
+    } else {
+      if (getNewStartAddr(n) >= getNewStartAddr(i) && getNewStartAddr(n) <= getNewEndAddr(i)) {
+        node[n].status = 'updating-collision'
+        col.push(i)
+      } else if (getNewEndAddr(n) >= getNewStartAddr(i) && getNewEndAddr(n) <= getNewEndAddr(i)) {
+        node[n].status = 'updating-collision'
+        col.push(i)
+      }
+    }
+  }
+  drawRow(n)
+  for (let i = 0; i < col.length; i++) {
+    console.log('change updating ' + col[i])
+    if ()
+    drawRow(col[i])
   }
 }
 
@@ -179,10 +201,7 @@ network.get_interfaces_list(function (err, interfaceList) {
 
 function updateTable () {
   for (let i = 0; i < node.length; i++) {
-    if (node[i].status === 'Updating' || node[i].status === 'updating-collision') {
-    } else {
-      node[i].status = 'Offline'
-    }
+    node[i].status = 'Offline'
   }
   for (let i = 0; i < controller.nodes.length; i++) {
     logger.verbose(controller.nodes[i])
