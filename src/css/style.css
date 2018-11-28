@@ -47,7 +47,7 @@ div.updating-collision {
 }
 @keyframes upCollision {
     0% {background-color:#ffcc00;}
-    50% {background-color:blue;}
+    50% {background-color:#44D;}
     100% {background-color:#ffcc00;}
 }
 div.online-collision {
@@ -58,7 +58,7 @@ div.online-collision {
 }
 @keyframes onCollision {
     0% {background-color:#33cc33;}
-    50% {background-color:blue;}
+    50% {background-color:#44D;}
     100% {background-color:#33cc33;}
 }
 
