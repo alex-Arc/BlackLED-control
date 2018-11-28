@@ -28,7 +28,7 @@ document.addEventListener('keyup',
   },
   true /* grab event on tunnel, not on bubble */)
 
-function pollTimeOutBar () {
+/*function pollTimeOutBar () {
   var elem = document.getElementById('pollBar')
   var width = 1
   var id = setInterval(frame, 10)
@@ -40,7 +40,7 @@ function pollTimeOutBar () {
       elem.style.width = width + '%'
     }
   }
-}
+}*/
 
 function clearTable () {
   node = []
@@ -232,10 +232,15 @@ network.get_interfaces_list(function (err, interfaceList) {
 function updateTable () {
   getNodes()
   drawTable()
+  let elm = document.getElementById('updateButton')
+  elm.classList.remove('puls')
+  void elm.offsetWidth
+  elm.classList.add('puls')
   if (mode === 'live') {
     pollTimeOut = Date.now()
+    clearTimeout(updateTable)
     setTimeout(updateTable, 4000)
-    pollTimeOutBar()
+    // pollTimeOutBar()
   } else if (mode === 'setup') {
   }
 }
