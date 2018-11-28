@@ -338,12 +338,13 @@ function drawStatusTable () {
     }
 
     if (node[i].numOuts !== undefined) {
-      let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
+      let addr = getStartAddr(i)
       if (addr !== parseInt(newAddress)) {
         row.cells[3].innerHTML = parseInt(newAddress) + (node[i].numOuts * 3)
         row.cells[3].setAttribute('class', 'statusText updating')
       } else {
         row.cells[3].innerHTML = addr + (node[i].numOuts * 3)
+        row.cells[3].setAttribute('class', '')
       }
     } else {
       row.cells[3].innerHTML = ''
