@@ -3,6 +3,8 @@ let controller = ArtNet.createController()
 const path = require('path')
 const exec = require('child_process').exec
 
+const {dialog} = require('electron').remote
+
 const {remote, ipcRenderer} = require('electron')
 const logger = remote.getGlobal('logger')
 let node = remote.getGlobal('globalNode')
@@ -22,17 +24,44 @@ function execute (command, callback) {
 
 document.addEventListener('keyup',
   function (e) {
-    if (e.key === 'p') {
-      let cmd = path.join(__dirname, '\\teensy_loader_cli.exe')
-      cmd += ' -mmcu=mk20dx256 -v -w '
-      cmd += 'C:\\Users\\Alex\\Desktop\\BlackLED.ino.hex'
-      console.log(cmd)
-      execute(cmd, (error, stdout, stderr) => {
-        console.log('run')
-        console.log(error)
-        console.log(stdout)
-        console.log(stderr)
-      })
+    if (e.key === 'u') {
+      let hexFile
+      dialog.showOpenDialog(
+        { filters: [ { name: 'Firmware', extensions: ['hex'] } ] },
+        function (fileNames) {
+          // fileNames is an array that contains all the selected
+          if (fileNames === undefined) {
+            console.log('No file selected')
+          } else {
+            hexFile = fileNames[0]
+            console.log(fileNames[0])
+            let cmd = path.join(__dirname, '\\teensy_loader_cli.exe')
+            cmd += ' -mmcu=mk20dx256 -v -w '
+            cmd += hexFile
+            console.log(cmd)
+            dialog.showMessageBox(
+              { type: 'warning',
+                buttons: ['OK', 'Cancel'],
+                message: 'press reboot button on teensy then clik OK' },
+              function (response) {
+                console.log(response)
+                if (response === 0) {
+                  execute(cmd, (error, stdout, stderr) => {
+                    let out = String(stdout)
+                    console.log(out)
+                    if (error !== null || stderr !== '') {
+                      console.error(stderr)
+                      console.error(error)
+                      console.error(stdout)
+                    } else if (out.includes('Booting')) {
+                      dialog.showMessageBox({ type: 'info', message: 'Upload OK' })
+                    }
+                  })
+                }
+              }
+            )
+          }
+        })
     }
     if (e.key === 'Escape') {
       let activeElm = document.activeElement
