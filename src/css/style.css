@@ -3,10 +3,11 @@ body, input {
   color: #FFF;
   font-family: "Trebuchet MS";
   font-size: 18px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #pollTimeOut {
+  margin: 10px;
   width: 400px;
   background-color: #ddd;
 }
@@ -59,7 +60,7 @@ div.online-collision {
     top: 0;
     width: 99%;
     height: 80%;
-    overflow: scroll;
+    overflow: hidden;
     border: 4px solid #333;
     border-radius: 5px;
 }
