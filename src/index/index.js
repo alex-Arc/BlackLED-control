@@ -47,6 +47,15 @@ function clearTable () {
   drawTable()
 }
 
+function clearOffline () {
+  for (let i = 0; i < node.length; i++) {
+    if (node[i].status === 'Offline') {
+      node.splice(i)
+    }
+  }
+  drawTable()
+}
+
 function setMode (newMode) {
   mode = newMode
   let liveBtn = document.getElementById('liveMode')
