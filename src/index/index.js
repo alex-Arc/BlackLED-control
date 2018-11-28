@@ -235,18 +235,13 @@ function updateTable () {
           node[j].Fps = fps
           node[j].temperature = temp
           node[j].build = build
-          if (node[i].status === 'Updating' || node[i].status === 'updating-collision') {
-            if (node[j].net === controller.nodes[i].net && node[j].subnet === controller.nodes[i].subnet && node[j].univers === controller.nodes[i].universesOutput) {
-
-            }
-          } else {
-            node[j].status = 'Online'
-            node[j].name = controller.nodes[i].name
-            node[j].numOuts = numOuts
-            node[j].net = controller.nodes[i].net
-            node[j].subnet = controller.nodes[i].subnet
-            node[j].univers = controller.nodes[i].universesOutput
-          }
+          setStatusOnline(j)
+          // node[j].status = 'Online'
+          node[j].name = controller.nodes[i].name
+          node[j].numOuts = numOuts
+          node[j].net = controller.nodes[i].net
+          node[j].subnet = controller.nodes[i].subnet
+          node[j].univers = controller.nodes[i].universesOutput
         }
       }
     }
@@ -279,9 +274,15 @@ function updateTable () {
   } else if (mode === 'setup') {
   }
 }
+function createRow (i) {
+  var table = document.getElementById('node-table-content')
+  let rowCount = table.getAttribute('rowCount')
+}
 
 function drawRow (i) {
   let row = document.getElementById(i)
+  let newAddress = document.getElementById('addr_' + i).value
+
   // row.innerHTML = ''
   let j = 0
   if (node[i].status === 'Online') {
@@ -295,36 +296,17 @@ function drawRow (i) {
   } else if (node[i].status === 'online-collision') {
     row.cells[j++].innerHTML = '<div class="statusCircle online-collision"></div>'
   }
-  row.cells[j++].innerHTML = '<input type="text" id="name_' + i + '" oninput="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
-  // row.cells[j++].innerHTML = node[i].mac
-  let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-  row.cells[j++].innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
+
   if (node[i].numOuts !== undefined) {
-    row.cells[j++].innerHTML = addr + (node[i].numOuts * 3)
-  } else {
-    row.cells[j++].innerHTML = ''
-  }
-  row.cells[j++].innerHTML = node[i].numOuts
-  row.cells[j++].innerHTML = node[i].uniUpdate
-  row.cells[j++].innerHTML = node[i].Fps
-  // row.cells[j++].innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
-  // row.cells[j++].innerHTML = node[i].temperature + ' C°'
-  // row.cells[j++].innerHTML = node[i].version
-  // row.cells[j++].innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
-  if (node[i].version >= 0.10) {
-    // row.cells[j++].innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
-    if (node[i].locate === false) {
-      row.cells[j++].innerHTML = '<button class="btn-default" onClick="locateClient(' + i + ')">LOCATE</button>'
+    let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
+    if (addr !== parseInt(newAddress)) {
+      row.cells[3].innerHTML = parseInt(newAddress) + (node[i].numOuts * 3)
+      row.cells[3].setAttribute('class', 'statusText updating')
     } else {
-      row.cells[j++].innerHTML = '<button class="btn-primary" onClick="locateClient(' + i + ')">LOCATE</button>'
+      row.cells[3].innerHTML = addr + (node[i].numOuts * 3)
     }
   } else {
-    row.cells[j++].innerHTML = ''
-  }
-  if (mode === 'setup') {
-    row.cells[j++].innerHTML = '<button class="btn-default" onClick="applyNameAddr(' + i + ')">APPLY</button>'
-  } else if (mode === 'live') {
-    row.cells[j++].innerHTML = ''
+    row.cells[3].innerHTML = ''
   }
 }
 
@@ -343,13 +325,17 @@ function drawTable () {
         row.insertCell(j++).innerHTML = '<div class="statusCircle online"></div>'
       } else if (node[i].status === 'Offline') {
         row.insertCell(j++).innerHTML = '<div class="statusCircle offline"></div>'
-      } else {
+      } else if (node[i].status === 'Updating') {
         row.insertCell(j++).innerHTML = '<div class="statusCircle updating"></div>'
+      } else if (node[i].status === 'updating-collision') {
+        row.insertCell(j++).innerHTML = '<div class="statusCircle updating-collision"></div>'
+      } else if (node[i].status === 'online-collision') {
+        row.insertCell(j++).innerHTML = '<div class="statusCircle online-collision"></div>'
       }
       row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" oninput="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
       // row.insertCell(j++).innerHTML = node[i].mac
       let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-      row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
+      row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" oninput="setStatusUpdating(' + i + ')" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
       if (node[i].numOuts !== undefined) {
         row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3)
       } else {
