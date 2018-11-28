@@ -12,6 +12,22 @@ let mode = 'live'
 let fieldMode = 'readonly'
 var pollTimeOut
 
+document.addEventListener('keyup',
+  function (e) {
+    if (e.key === 'Escape') {
+      let activeElm = document.activeElement
+      if (activeElm.id.includes('addr_') || activeElm.id.includes('name_')) {
+        let n = parseInt(activeElm.id[activeElm.id.length - 1])
+        document.getElementById('name_' + n).value = node[n].name
+        document.getElementById('addr_' + n).value = getStartAddr(n)
+        setStatusOnline(n)
+        drawStatusTable()
+        console.log(n)
+      }
+    }
+  },
+  true /* grab event on tunnel, not on bubble */)
+
 function pollTimeOutBar () {
   var elem = document.getElementById('pollBar')
   var width = 1
@@ -163,9 +179,12 @@ function setStatusOnline (n) {
       }
     }
   }
-  drawRow(n)
 }
-
+function uiUpdate (n) {
+  getNodes()
+  setStatusUpdating(n)
+  drawStatusTable()
+}
 function setStatusUpdating (n) {
   let col = []
   console.log('change updating')
@@ -183,11 +202,13 @@ function setStatusUpdating (n) {
       }
     }
   }
-  drawRow(n)
   for (let i = 0; i < col.length; i++) {
     console.log('change updating ' + col[i])
-    if ()
-    drawRow(col[i])
+    if (node[col[i]].status === 'Updating') {
+      node[col[i]].status = 'updating-collision'
+    } else if (node[col[i]].status === 'Online') {
+      node[col[i]].status = 'online-collision'
+    }
   }
 }
 
@@ -246,7 +267,11 @@ function getNodes () {
           node[j].Fps = fps
           node[j].temperature = temp
           node[j].build = build
-          setStatusOnline(j)
+          if (getStartAddr(j) !== getNewStartAddr(j)) {
+            setStatusUpdating(j)
+          } else {
+            setStatusOnline(j)
+          }
           // node[j].status = 'Online'
           node[j].name = controller.nodes[i].name
           node[j].numOuts = numOuts
@@ -284,34 +309,36 @@ function createRow (i) {
   let rowCount = table.getAttribute('rowCount')
 }
 
-function drawRow (i) {
-  let row = document.getElementById(i)
-  let newAddress = document.getElementById('addr_' + i).value
+function drawStatusTable () {
+  for (let i = 0; i < node.length; i++) {
+    let row = document.getElementById(i)
+    let newAddress = document.getElementById('addr_' + i).value
 
-  // row.innerHTML = ''
-  let j = 0
-  if (node[i].status === 'Online') {
-    row.cells[j++].innerHTML = '<div class="statusCircle online"></div>'
-  } else if (node[i].status === 'Offline') {
-    row.cells[j++].innerHTML = '<div class="statusCircle offline"></div>'
-  } else if (node[i].status === 'Updating') {
-    row.cells[j++].innerHTML = '<div class="statusCircle updating"></div>'
-  } else if (node[i].status === 'updating-collision') {
-    row.cells[j++].innerHTML = '<div class="statusCircle updating-collision"></div>'
-  } else if (node[i].status === 'online-collision') {
-    row.cells[j++].innerHTML = '<div class="statusCircle online-collision"></div>'
-  }
-
-  if (node[i].numOuts !== undefined) {
-    let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-    if (addr !== parseInt(newAddress)) {
-      row.cells[3].innerHTML = parseInt(newAddress) + (node[i].numOuts * 3)
-      row.cells[3].setAttribute('class', 'statusText updating')
-    } else {
-      row.cells[3].innerHTML = addr + (node[i].numOuts * 3)
+    // row.innerHTML = ''
+    let j = 0
+    if (node[i].status === 'Online') {
+      row.cells[j++].innerHTML = '<div class="statusCircle online"></div>'
+    } else if (node[i].status === 'Offline') {
+      row.cells[j++].innerHTML = '<div class="statusCircle offline"></div>'
+    } else if (node[i].status === 'Updating') {
+      row.cells[j++].innerHTML = '<div class="statusCircle updating"></div>'
+    } else if (node[i].status === 'updating-collision') {
+      row.cells[j++].innerHTML = '<div class="statusCircle updating-collision"></div>'
+    } else if (node[i].status === 'online-collision') {
+      row.cells[j++].innerHTML = '<div class="statusCircle online-collision"></div>'
     }
-  } else {
-    row.cells[3].innerHTML = ''
+
+    if (node[i].numOuts !== undefined) {
+      let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
+      if (addr !== parseInt(newAddress)) {
+        row.cells[3].innerHTML = parseInt(newAddress) + (node[i].numOuts * 3)
+        row.cells[3].setAttribute('class', 'statusText updating')
+      } else {
+        row.cells[3].innerHTML = addr + (node[i].numOuts * 3)
+      }
+    } else {
+      row.cells[3].innerHTML = ''
+    }
   }
 }
 
@@ -337,10 +364,10 @@ function drawTable () {
       } else if (node[i].status === 'online-collision') {
         row.insertCell(j++).innerHTML = '<div class="statusCircle online-collision"></div>'
       }
-      row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" oninput="setStatusUpdating(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
+      row.insertCell(j++).innerHTML = '<input type="text" id="name_' + i + '" oninput="uiUpdate(' + i + ')" value="' + node[i].name + '" ' + fieldMode + '>'
       // row.insertCell(j++).innerHTML = node[i].mac
-      let addr = (node[i].net << 8) + (node[i].subnet << 4) + node[i].univers[0]
-      row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" oninput="setStatusUpdating(' + i + ')" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
+      let addr = getStartAddr(i)
+      row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" oninput="uiUpdate(' + i + ')" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
       if (node[i].numOuts !== undefined) {
         row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3)
       } else {
