@@ -86,10 +86,23 @@ function getStartAddr (n) {
   return addr
 }
 
+function getNewStartAddr (n) {
+  let newAddress = document.getElementById('addr_' + n).value
+  // let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
+  return parseInt(newAddress)
+}
+
 function getEndAddr (n) {
   let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
   addr += (node[n].numOuts * 3)
   return addr
+}
+
+function getNewEndAddr (n) {
+  let newAddress = document.getElementById('addr_' + n).value
+  // let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
+
+  return parseInt(newAddress) + (node[n].numOuts * 3)
 }
 
 function addrToNet (n) {
