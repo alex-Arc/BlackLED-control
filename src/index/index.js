@@ -200,6 +200,17 @@ network.get_interfaces_list(function (err, interfaceList) {
 })
 
 function updateTable () {
+  getNodes()
+  drawTable()
+  if (mode === 'live') {
+    pollTimeOut = Date.now()
+    setTimeout(updateTable, 4000)
+    pollTimeOutBar()
+  } else if (mode === 'setup') {
+  }
+}
+
+function getNodes () {
   for (let i = 0; i < node.length; i++) {
     node[i].status = 'Offline'
   }
@@ -264,16 +275,10 @@ function updateTable () {
     logger.debug(node)
   }
   logger.info({currentFPS: controller.fps})
-  drawTable()
   let jsonObj = JSON.stringify(node, null, '\t')
   logger.debug(jsonObj)
-  if (mode === 'live') {
-    pollTimeOut = Date.now()
-    setTimeout(updateTable, 4000)
-    pollTimeOutBar()
-  } else if (mode === 'setup') {
-  }
 }
+
 function createRow (i) {
   var table = document.getElementById('node-table-content')
   let rowCount = table.getAttribute('rowCount')
