@@ -40,7 +40,8 @@ document.addEventListener('keyup',
             if (isWin === true) {
               cmd = path.join(__dirname, '\\teensy_loader_cli.exe')
             } else {
-              cmd = path.join(__dirname, '/teensy_loader_cli.exe')
+              cmd = 'sudo '
+              cmd += path.join(__dirname, '/teensy_loader_cli')
             }
             cmd += ' -mmcu=mk20dx256 -v -w '
             cmd += hexFile
