@@ -4,6 +4,7 @@ const path = require('path')
 const exec = require('child_process').exec
 
 const {dialog} = require('electron').remote
+const isWin = process.platform === 'win32'
 
 const {remote, ipcRenderer} = require('electron')
 const logger = remote.getGlobal('logger')
@@ -35,7 +36,12 @@ document.addEventListener('keyup',
           } else {
             hexFile = fileNames[0]
             console.log(fileNames[0])
-            let cmd = path.join(__dirname, '\\teensy_loader_cli.exe')
+            let cmd
+            if (isWin === true) {
+              cmd = path.join(__dirname, '\\teensy_loader_cli.exe')
+            } else {
+              cmd = path.join(__dirname, '/teensy_loader_cli.exe')
+            }
             cmd += ' -mmcu=mk20dx256 -v -w '
             cmd += hexFile
             console.log(cmd)
