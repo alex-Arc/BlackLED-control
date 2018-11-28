@@ -148,7 +148,7 @@ function applyNameAddrAll () {
       applyNameAddr(i)
     }
   }
-  setTimeout(updateTable, 1000)
+  updateTable()
 }
 
 function applyNameAddr (n) {
