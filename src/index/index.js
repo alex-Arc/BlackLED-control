@@ -459,7 +459,7 @@ function drawTable () {
         row.insertCell(j++).innerHTML = ''
       }
       row.insertCell(j++).innerHTML = node[i].version
-      row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
+      // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
     }
   }
 }
