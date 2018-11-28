@@ -19,3 +19,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+/* Teensy Loader, Command Line Interface
+ * Program and Reboot Teensy Board with HalfKay Bootloader
+ * http://www.pjrc.com/teensy/loader_cli.html
+ * Copyright 2008-2016, PJRC.COM, LLC
+ *
+ * You may redistribute this program and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software
+ * Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ */
+
+/* Want to incorporate this code into a proprietary application??
+ * Just email paul@pjrc.com to ask.  Usually it's not a problem,
+ * but you do need to ask to use this code in any way other than
+ * those permitted by the GNU General Public License, version 3  */
+
+/* For non-root permissions on ubuntu or similar udev-based linux
+ * http://www.pjrc.com/teensy/49-teensy.rules
+ */
