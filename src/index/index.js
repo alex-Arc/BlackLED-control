@@ -104,6 +104,15 @@ function addrToUni (n) {
   return n & 0x0F
 }
 
+function applyNameAddrAll () {
+  for (let i = 0; i < node.length; i++) {
+    if (node.status === 'Updating' || node.status === 'updating-collision') {
+      applyNameAddr(i)
+    }
+  }
+  setTimeout(updateTable, 1000)
+}
+
 function applyNameAddr (n) {
   let newName = document.getElementById('name_' + n).value
   let newAddress = document.getElementById('addr_' + n).value
