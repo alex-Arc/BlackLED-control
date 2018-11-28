@@ -1,5 +1,7 @@
 let ArtNet = require('artnet')
 let controller = ArtNet.createController()
+const path = require('path')
+const exec = require('child_process').exec
 
 const {remote, ipcRenderer} = require('electron')
 const logger = remote.getGlobal('logger')
@@ -10,10 +12,28 @@ let $ = require('jquery')
 
 let mode = 'live'
 let fieldMode = 'readonly'
-var pollTimeOut
+// var pollTimeOut
+
+function execute (command, callback) {
+  exec(command, (error, stdout, stderr) => {
+      callback(error, stdout, stderr)
+  })
+}
 
 document.addEventListener('keyup',
   function (e) {
+    if (e.key === 'p') {
+      let cmd = path.join(__dirname, '\\teensy_loader_cli.exe')
+      cmd += ' -mmcu=mk20dx256 -v -w '
+      cmd += 'C:\\Users\\Alex\\Desktop\\BlackLED.ino.hex'
+      console.log(cmd)
+      execute(cmd, (error, stdout, stderr) => {
+        console.log('run')
+        console.log(error)
+        console.log(stdout)
+        console.log(stderr)
+      })
+    }
     if (e.key === 'Escape') {
       let activeElm = document.activeElement
       if (activeElm.id.includes('addr_') || activeElm.id.includes('name_')) {
@@ -175,7 +195,7 @@ function applyNameAddr (n) {
 }
 
 function setStatusOnline (n) {
-  console.log('change online')
+  // console.log('change online')
   node[n].status = 'Online'
   for (let i = 0; i < node.length; i++) {
     if (node[n].mac === node[i].mac) {
@@ -189,6 +209,7 @@ function setStatusOnline (n) {
     }
   }
 }
+
 function uiUpdate (n) {
   getNodes()
   setStatusUpdating(n)
@@ -393,8 +414,6 @@ function drawTable () {
       row.insertCell(j++).innerHTML = node[i].Fps
       // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="editClient(' + i + ')">Edit</button>'
       // row.insertCell(j++).innerHTML = node[i].temperature + ' C°'
-      // row.insertCell(j++).innerHTML = node[i].version
-      // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
       if (node[i].version >= 0.10) {
         // row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="resetClient(' + i + ')">RESET</button>'
         if (node[i].locate === false) {
@@ -410,6 +429,8 @@ function drawTable () {
       } else if (mode === 'live') {
         row.insertCell(j++).innerHTML = ''
       }
+      row.insertCell(j++).innerHTML = node[i].version
+      row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
     }
   }
 }
