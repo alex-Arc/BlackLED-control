@@ -7,7 +7,6 @@ const {dialog} = require('electron').remote
 const isWin = process.platform === 'win32'
 
 const {remote, ipcRenderer} = require('electron')
-const logger = remote.getGlobal('logger')
 let node = remote.getGlobal('globalNode')
 // let node = []
 let network = require('network')
@@ -280,9 +279,9 @@ function setStatusUpdating (n) {
 
 network.get_interfaces_list(function (err, interfaceList) {
   if (err) {
-    logger.error(err)
+    console.error(err)
   } else {
-    logger.verbose(interfaceList)
+    console.log(interfaceList)
   }
 })
 
@@ -307,7 +306,6 @@ function getNodes () {
     node[i].status = 'Offline'
   }
   for (let i = 0; i < controller.nodes.length; i++) {
-    logger.verbose(controller.nodes[i])
     var newNode = true
     if (node.length > 0) {
       for (let j = 0; j < node.length; j++) {
@@ -357,22 +355,6 @@ function getNodes () {
       node.push(obj)
     }
   }
-  if (node.length <= 0) {
-    logger.warn({numNodes: 0})
-  } else {
-    let nodeLog = {numNodes: node.length, numOfflineNodes: 0, offlineNodes: []}
-    for (let i = 0; i < node.length; i++) {
-      if (node[i].status === 'Offline') {
-        nodeLog.offlineNodes.push(node[i].name)
-        nodeLog.numOfflineNodes++
-      }
-    }
-    logger.info(nodeLog)
-    logger.debug(node)
-  }
-  logger.info({currentFPS: controller.fps})
-  let jsonObj = JSON.stringify(node, null, '\t')
-  logger.debug(jsonObj)
 }
 
 function createRow (i) {
