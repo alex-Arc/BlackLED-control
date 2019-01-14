@@ -174,7 +174,7 @@ function getNewStartAddr (n) {
 
 function getEndAddr (n) {
   let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
-  addr += (node[n].numOuts * 3) - 1
+  addr += Math.ceil(node[n].numOuts * node[n].numUniPOut) - 1
   return addr
 }
 
@@ -182,7 +182,7 @@ function getNewEndAddr (n) {
   let newAddress = document.getElementById('addr_' + n).value
   // let addr = (node[n].net << 8) + (node[n].subnet << 4) + node[n].univers[0]
 
-  return parseInt(newAddress) + (node[n].numOuts * 3) - 1
+  return parseInt(newAddress) + Math.ceil(node[n].numOuts * node[n].numUniPOut) - 1
 }
 
 function addrToNet (n) {
@@ -317,6 +317,9 @@ function getNodes () {
               case 'numOuts':
                 var numOuts = report[r + 1]
                 break
+              case 'numUniPOut':
+                var numUniPOut = parseFloat(report[r + 1])
+                break
               case 'temp':
                 var temp = report[r + 1]
                 break
@@ -344,6 +347,7 @@ function getNodes () {
           // node[j].status = 'Online'
           node[j].name = controller.nodes[i].name
           node[j].numOuts = numOuts
+          node[j].numUniPOut = numUniPOut
           node[j].net = controller.nodes[i].net
           node[j].subnet = controller.nodes[i].subnet
           node[j].univers = controller.nodes[i].universesOutput
@@ -384,10 +388,10 @@ function drawStatusTable () {
     if (node[i].numOuts !== undefined) {
       let addr = getStartAddr(i)
       if (addr !== parseInt(newAddress)) {
-        row.cells[3].innerHTML = parseInt(newAddress) + (node[i].numOuts * 3) - 1
+        row.cells[3].innerHTML = parseInt(newAddress) + Math.ceil(node[i].numOuts * node[i].numUniPOut) - 1
         row.cells[3].setAttribute('class', 'statusText updating')
       } else {
-        row.cells[3].innerHTML = addr + (node[i].numOuts * 3) - 1
+        row.cells[3].innerHTML = addr + Math.ceil(node[i].numOuts * node[i].numUniPOut) - 1
         row.cells[3].setAttribute('class', '')
       }
     } else {
@@ -423,7 +427,7 @@ function drawTable () {
       let addr = getStartAddr(i)
       row.insertCell(j++).innerHTML = '<input type="text" style="width: 45px;" oninput="uiUpdate(' + i + ')" id="addr_' + i + '" value="' + addr + '" ' + fieldMode + '>'
       if (node[i].numOuts !== undefined) {
-        row.insertCell(j++).innerHTML = addr + (node[i].numOuts * 3) - 1
+        row.insertCell(j++).innerHTML = addr + Math.ceil(node[i].numOuts * node[i].numUniPOut) - 1
       } else {
         row.insertCell(j++).innerHTML = ''
       }
