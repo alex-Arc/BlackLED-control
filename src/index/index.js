@@ -206,6 +206,40 @@ function editClient (n) {
   ipcRenderer.send('editClient', n)
 }
 
+function uploadFimrware (n) {
+  console.log('uploadFimrware')
+  node[n].status = 'Updating'
+  let hexFile
+  dialog.showOpenDialog(
+    { filters: [ { name: 'Firmware', extensions: ['hex'] } ] },
+    function (fileNames) {
+      // fileNames is an array that contains all the selected
+      if (fileNames === undefined) {
+        console.log('No file selected')
+      } else {
+        hexFile = fs.readFileSync(fileNames[0], 'utf8')
+        firmwarePieces = hexFile.split('\n')
+        let message = Buffer.from([0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0x00, 0x00, 0xf2])
+        dialog.showMessageBox(
+          { type: 'warning',
+            buttons: ['OK', 'Cancel'],
+            message: 'Do not turn off the node, this program og the network connection' },
+          function (response) {
+            console.log(response)
+            if (response === 0) {
+              server.send(message, 6454, node[n].ip, (err) => {
+                console.error(err)
+              })
+              node[n].version = '0 of ' + String(firmwarePieces.length)
+              drawTable()
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
 function resetClient (n) {
   node[n].status = 'Updating'
   drawTable()
@@ -517,7 +551,11 @@ function drawTable () {
       } else if (mode === 'live') {
         row.insertCell(j++).innerHTML = ''
       }
-      row.insertCell(j++).innerHTML = node[i].version
+      if (mode === 'setup') {
+        row.insertCell(j++).innerHTML = '<button class="btn-default" onClick="uploadFimrware(' + i + ')">' + node[i].version + '</button>'
+      } else {
+        row.insertCell(j++).innerHTML = node[i].version
+      }
       // row.insertCell(j++).innerHTML = ((node[i].build === undefined) ? 'NA' : node[i].build)
     }
   }
