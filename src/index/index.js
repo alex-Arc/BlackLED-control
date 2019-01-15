@@ -21,8 +21,6 @@ const dgram = require('dgram')
 const server = dgram.createSocket('udp4')
 var fs = require('fs')
 
-const ProgressBar = require('electron-progressbar')
-
 function execute (command, callback) {
   exec(command, (error, stdout, stderr) => {
     callback(error, stdout, stderr)
@@ -43,15 +41,20 @@ server.on('message', (msg, rinfo) => {
       let message = Buffer.from('firmware_line__' + firmwarePieces[fIndex] + '\n')
       fIndex++
       server.send(message, 0, message.length, 8050, rinfo.address, (err) => {
+        if (err) console.log(err)
       })
+      node[0].version = String(fIndex) + ' of ' + String(firmwarePieces.length)
     } else {
       console.log('firmware_line__' + ':flash ' + String(firmwarePieces.length - 1) + '\n')
       let message = Buffer.from('firmware_line__' + ':flash ' + String(firmwarePieces.length - 1) + '\n')
       server.send(message, 0, message.length, 8050, rinfo.address, (err) => {
+        if (err) console.log(err)
       })
+      node[0].version = 'DONE'
       console.log('DONE')
     }
   }
+  drawTable()
 })
 
 document.addEventListener('keyup',
@@ -67,33 +70,19 @@ document.addEventListener('keyup',
           } else {
             hexFile = fs.readFileSync(fileNames[0], 'utf8')
             firmwarePieces = hexFile.split('\n')
-            var progressBar = new ProgressBar({
-              indeterminate: false,
-              text: 'Uploadin data...',
-              detail: 'Wait...'
-            })
-            progressBar
-              .on('completed', function () {
-                console.info(`completed...`)
-                progressBar.detail = 'Task completed. Exiting...'
-              })
-              .on('aborted', function (value) {
-                console.info(`aborted... ${value}`)
-              })
-              .on('progress', function (value) {
-                progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
-              })
             let message = Buffer.from([0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0x00, 0x00, 0xf2])
             dialog.showMessageBox(
               { type: 'warning',
                 buttons: ['OK', 'Cancel'],
-                message: '' },
+                message: 'Do not turn off the node, this program og the network connection' },
               function (response) {
                 console.log(response)
                 if (response === 0) {
                   server.send(message, 6454, '2.8.82.67', (err) => {
                     console.error(err)
                   })
+                  node[0].version = '0 of ' + String(firmwarePieces.length)
+                  drawTable()
                 }
               }
             )
@@ -427,11 +416,12 @@ function getNodes () {
           node[j].net = controller.nodes[i].net
           node[j].subnet = controller.nodes[i].subnet
           node[j].univers = controller.nodes[i].universesOutput
+          node[j].version = controller.nodes[i].version
         }
       }
     }
     if (newNode === true) {
-      let obj = {mac: controller.nodes[i].mac, ip: controller.nodes[i].ip, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput, locate: false}
+      let obj = { mac: controller.nodes[i].mac, ip: controller.nodes[i].ip, name: controller.nodes[i].name, status: 'Online', version: controller.nodes[i].version, net: controller.nodes[i].net, subnet: controller.nodes[i].subnet, univers: controller.nodes[i].universesOutput, locate: false }
       node.push(obj)
     }
   }
