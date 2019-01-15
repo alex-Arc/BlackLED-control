@@ -16,14 +16,90 @@ let mode = 'live'
 let fieldMode = 'readonly'
 // var pollTimeOut
 
+const dgram = require('dgram')
+// const client = dgram.createSocket('udp4')
+const server = dgram.createSocket('udp4')
+var fs = require('fs')
+
+const ProgressBar = require('electron-progressbar')
+
 function execute (command, callback) {
   exec(command, (error, stdout, stderr) => {
-      callback(error, stdout, stderr)
+    callback(error, stdout, stderr)
   })
 }
 
+let firmwarePieces
+let fIndex = 0
+
+server.bind(8050)
+
+server.on('message', (msg, rinfo) => {
+  // console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`)
+  // console.log(msg[0])
+  if (msg[0] === 10) {
+    if (fIndex < firmwarePieces.length - 1) {
+      console.log(firmwarePieces[fIndex] + '\t' + String(fIndex + 1), ' of ' + String(firmwarePieces.length - 1))
+      let message = Buffer.from('firmware_line__' + firmwarePieces[fIndex] + '\n')
+      fIndex++
+      server.send(message, 0, message.length, 8050, rinfo.address, (err) => {
+      })
+    } else {
+      console.log('firmware_line__' + ':flash ' + String(firmwarePieces.length - 1) + '\n')
+      let message = Buffer.from('firmware_line__' + ':flash ' + String(firmwarePieces.length - 1) + '\n')
+      server.send(message, 0, message.length, 8050, rinfo.address, (err) => {
+      })
+      console.log('DONE')
+    }
+  }
+})
+
 document.addEventListener('keyup',
   function (e) {
+    if (e.key === 'e') {
+      let hexFile
+      dialog.showOpenDialog(
+        { filters: [ { name: 'Firmware', extensions: ['hex'] } ] },
+        function (fileNames) {
+          // fileNames is an array that contains all the selected
+          if (fileNames === undefined) {
+            console.log('No file selected')
+          } else {
+            hexFile = fs.readFileSync(fileNames[0], 'utf8')
+            firmwarePieces = hexFile.split('\n')
+            var progressBar = new ProgressBar({
+              indeterminate: false,
+              text: 'Uploadin data...',
+              detail: 'Wait...'
+            })
+            progressBar
+              .on('completed', function () {
+                console.info(`completed...`)
+                progressBar.detail = 'Task completed. Exiting...'
+              })
+              .on('aborted', function (value) {
+                console.info(`aborted... ${value}`)
+              })
+              .on('progress', function (value) {
+                progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
+              })
+            let message = Buffer.from([0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0x00, 0x00, 0xf2])
+            dialog.showMessageBox(
+              { type: 'warning',
+                buttons: ['OK', 'Cancel'],
+                message: '' },
+              function (response) {
+                console.log(response)
+                if (response === 0) {
+                  server.send(message, 6454, '2.8.82.67', (err) => {
+                    console.error(err)
+                  })
+                }
+              }
+            )
+          }
+        })
+    }
     if (e.key === 'u') {
       let hexFile
       dialog.showOpenDialog(
