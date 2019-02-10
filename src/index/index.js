@@ -29,13 +29,19 @@ function execute (command, callback) {
 
 let firmwarePieces
 let fIndex = 0
+let curFwNode = 0
+
+server.on('error', (err) => {
+  console.log(`server error:\n${err.stack}`)
+  server.close()
+})
 
 server.bind(8050)
 
 server.on('message', (msg, rinfo) => {
   // console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`)
   // console.log(msg[0])
-  if (msg[0] === 10) {
+  if (msg[0] === 10 && rinfo.address === node[curFwNode].ip) {
     if (fIndex < firmwarePieces.length - 1) {
       console.log(firmwarePieces[fIndex] + '\t' + String(fIndex + 1), ' of ' + String(firmwarePieces.length - 1))
       let message = Buffer.from('firmware_line__' + firmwarePieces[fIndex] + '\n')
@@ -43,14 +49,14 @@ server.on('message', (msg, rinfo) => {
       server.send(message, 0, message.length, 8050, rinfo.address, (err) => {
         if (err) console.log(err)
       })
-      node[0].version = String(fIndex) + ' of ' + String(firmwarePieces.length)
+      node[curFwNode].version = String(fIndex) + ' of ' + String(firmwarePieces.length)
     } else {
       console.log('firmware_line__' + ':flash ' + String(firmwarePieces.length - 1) + '\n')
       let message = Buffer.from('firmware_line__' + ':flash ' + String(firmwarePieces.length - 1) + '\n')
       server.send(message, 0, message.length, 8050, rinfo.address, (err) => {
         if (err) console.log(err)
       })
-      node[0].version = 'DONE'
+      node[curFwNode].version = 'DONE'
       console.log('DONE')
     }
   }
@@ -177,7 +183,8 @@ function editClient (n) {
 }
 
 function uploadFimrware (n) {
-  console.log('uploadFimrware')
+  curFwNode = n
+  console.log('uploadFimrware to ' + n)
   node[n].status = 'Updating'
   let hexFile
   dialog.showOpenDialog(
@@ -195,13 +202,13 @@ function uploadFimrware (n) {
             buttons: ['OK', 'Cancel'],
             message: 'Do not turn off the node, this program og the network connection' },
           function (response) {
-            console.log(response)
             if (response === 0) {
+              console.log('sending: ' + message + ' to: ' + node[n].ip)
               server.send(message, 6454, node[n].ip, (err) => {
-                console.error(err)
+                if (err) console.error(err)
+                node[n].version = '0 of ' + String(firmwarePieces.length)
+                drawTable()
               })
-              node[n].version = '0 of ' + String(firmwarePieces.length)
-              drawTable()
             }
           }
         )
