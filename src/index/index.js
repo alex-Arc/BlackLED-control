@@ -275,7 +275,8 @@ function addrToUni (n) {
 
 function applyNameAddrAll () {
   for (let i = 0; i < node.length; i++) {
-    if (node.status === 'Updating' || node.status === 'updating-collision') {
+    if (node[i].status === 'Updating' || node[i].status === 'updating-collision') {
+      console.log('apply to' + i)
       applyNameAddr(i)
     }
   }
@@ -302,7 +303,6 @@ function applyNameAddr (n) {
       }
     }
   }
-  drawRow(n)
 }
 
 function setStatusOnline (n) {
@@ -369,7 +369,7 @@ function updateTable () {
   void elm.offsetWidth
   elm.classList.add('puls')
   if (mode === 'live') {
-    pollTimeOut = Date.now()
+    // pollTimeOut = Date.now()
     clearTimeout(updateTable)
     setTimeout(updateTable, 4000)
     // pollTimeOutBar()
@@ -436,11 +436,6 @@ function getNodes () {
       node.push(obj)
     }
   }
-}
-
-function createRow (i) {
-  var table = document.getElementById('node-table-content')
-  let rowCount = table.getAttribute('rowCount')
 }
 
 function drawStatusTable () {
@@ -539,6 +534,6 @@ function drawTable () {
 }
 
 window.onload = function () {
-  controller.refreshClients()
+  // controller.refreshClients()
   updateTable()
 }
