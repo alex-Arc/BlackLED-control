@@ -381,7 +381,9 @@ function updateTable () {
 
 function getNodes () {
   for (let i = 0; i < node.length; i++) {
-    node[i].status = 'Offline'
+    if (node[i].status !== 'FromFile') {
+      node[i].status = 'Offline'
+    }
   }
   for (let i = 0; i < controller.nodes.length; i++) {
     var newNode = true
@@ -485,7 +487,9 @@ function drawTable () {
       let row = table.insertRow(-1)
       row.setAttribute('id', i)
       let j = 0
-      if (node[i].status === 'Online') {
+      if (node[i].status === 'FromFile') {
+        row.insertCell(j++).innerHTML = '<div class="statusCircle FromFile"></div>'
+      } else if (node[i].status === 'Online') {
         row.insertCell(j++).innerHTML = '<div class="statusCircle online"></div>'
       } else if (node[i].status === 'Offline') {
         row.insertCell(j++).innerHTML = '<div class="statusCircle offline"></div>'
@@ -545,6 +549,9 @@ window.onload = function () {
   }
   if (file !== undefined) {
     node = file
+  }
+  for (let i = 0; i < node.length; i++) {
+    node[i].status = 'FromFile'
   }
   console.log(node)
   updateTable()
