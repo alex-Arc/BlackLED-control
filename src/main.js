@@ -10,9 +10,6 @@ if (env === 'dev') {
 
 let mainWindow
 
-let node = []
-global.globalNode = node
-
 let editClientWindow
 let currentClientToEdit = 1
 

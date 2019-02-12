@@ -6,9 +6,11 @@ const exec = require('child_process').exec
 const {dialog} = require('electron').remote
 const isWin = process.platform === 'win32'
 
+const fs = require('fs')
+
 const {remote, ipcRenderer} = require('electron')
-let node = remote.getGlobal('globalNode')
-// let node = []
+let node = []
+
 let network = require('network')
 let $ = require('jquery')
 
@@ -19,7 +21,6 @@ let fieldMode = 'readonly'
 const dgram = require('dgram')
 // const client = dgram.createSocket('udp4')
 const server = dgram.createSocket('udp4')
-var fs = require('fs')
 
 function execute (command, callback) {
   exec(command, (error, stdout, stderr) => {
@@ -364,6 +365,7 @@ network.get_interfaces_list(function (err, interfaceList) {
 function updateTable () {
   getNodes()
   drawTable()
+  fs.writeFileSync('./save.json', JSON.stringify(node)) // save node objects to file
   let elm = document.getElementById('updateButton')
   elm.classList.remove('puls')
   void elm.offsetWidth
@@ -534,6 +536,16 @@ function drawTable () {
 }
 
 window.onload = function () {
-  // controller.refreshClients()
+  let file
+  try {
+    let raw = fs.readFileSync('./save.json', 'utf8')
+    file = JSON.parse(raw)
+  } catch (err) {
+    console.error('no save file')
+  }
+  if (file !== undefined) {
+    node = file
+  }
+  console.log(node)
   updateTable()
 }
