@@ -32,3 +32,5 @@ blackled-control-win32-x64/
 blackled-control-darwin-x64/
 
 dist/
+
+save\.json
