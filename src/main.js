@@ -5,32 +5,38 @@ const fs = require('fs');
 const pwMan = require('clortho').forService('BlackLED');
 const nodemailer = require('nodemailer');
 
-let p = app.getPath('appData');
+let p = path.join(app.getPath('appData'), '/BlackLED');
 let mailInfo;
 
 function getSettings() {
   try {
+    if (!fs.existsSync(path.join(p, 'mail.json'))) {
+      console.log('no folder creating new');
+      fs.mkdirSync(p)
+    }
     mailInfo = JSON.parse(fs.readFileSync(path.join(p, 'mail.json')));
   } catch (e) {
     console.log(e);
   }
-  let pw = pwMan.getFromKeychain(mailInfo.account).catch(() =>
-    pwMan.prompt(
-      mailInfo.account,
-      ' '
-    ).then(pwMan.trySaveToKeychain)
-  );
-  pw.then( (e) => {
-    mailInfo.password = e.password;
-    mailTransporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: mailInfo.account,
-        pass: mailInfo.password
-      }
-    });
-    console.log(mailInfo);
-  })
+  if (mailInfo !== undefined) {
+    let pw = pwMan.getFromKeychain(mailInfo.account).catch(() =>
+      pwMan.prompt(
+        ' ',
+        ' '
+      ).then(pwMan.trySaveToKeychain)
+    );
+    pw.then( (e) => {
+      mailInfo.password = e.password;
+      mailTransporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: mailInfo.account,
+          pass: mailInfo.password
+        }
+      });
+      console.log(mailInfo);
+    })
+  }
 }
 
 var env = process.argv[2]
