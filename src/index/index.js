@@ -476,6 +476,14 @@ function drawStatusTable () {
   }
 }
 
+let offlineFlag = false;
+
+function clearMailFlag() {
+  offlineFlag = false;
+  let element = document.getElementById('cmf');
+  element.parentNode.removeChild(element);
+}
+
 function drawTable () {
   let fpsDisp = document.getElementById('fpsDisp')
   fpsDisp.innerHTML = 'Master Fps: ' + Math.round(controller.fps)
@@ -483,6 +491,18 @@ function drawTable () {
   table.innerHTML = ''
   for (var i = 0; i < node.length; i++) {
     if (node[i].mac !== undefined) {
+      if (node[i].status === 'Offline' && offlineFlag === false) {
+        offlineFlag = true;
+        ipcRenderer.send("email:sendMsg");
+        console.log('send email');
+        var p = document.getElementById('btn-bar');
+        var newElement = document.createElement('button');
+        newElement.setAttribute('id', 'cmf');
+        newElement.setAttribute('class', 'btn-primary');
+        newElement.setAttribute('onClick', 'clearMailFlag()');
+        newElement.innerHTML = 'clearMailFlag';
+        p.appendChild(newElement);
+      }
       // let rowCount = table.rows.length
       let row = table.insertRow(-1)
       row.setAttribute('id', i)
